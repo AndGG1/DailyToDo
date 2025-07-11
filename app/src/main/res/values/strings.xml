@@ -1,0 +1,8 @@
+<resources>
+    //Base Strings
+    <string name="app_name">My Application</string>
+
+    //Start Page Strings
+    <string name="welcome_tag">Welcome!</string>
+    <string name="welcome_tag_2">Let\'s get to know each-other!</string>
+</resources>
