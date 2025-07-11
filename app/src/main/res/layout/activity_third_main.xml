@@ -1,0 +1,83 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/daySelectorLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingTop="48dp"
+    android:background="@color/white">
+
+    <!-- Settings Button (Top Right) -->
+    <ImageView
+        android:id="@+id/settingsButton"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="24dp"
+        android:src="@drawable/ic_settings"
+        android:contentDescription="Settings"
+        app:tint="#A175F7" />
+
+    <!-- Day Buttons Group -->
+    <LinearLayout
+        android:id="@+id/dayButtonGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@id/settingsButton"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="32dp">
+
+        <Button
+            android:id="@+id/yesterdayButton"
+            android:layout_width="100dp"
+            android:layout_height="48dp"
+            android:text="Yesterday"
+            android:background="@drawable/button_day_selector"
+            android:textColor="@color/white" />
+
+        <Button
+            android:id="@+id/todayButton"
+            android:layout_width="100dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
+            android:background="@drawable/button_day_selector"
+            android:text="Today"
+            android:textColor="@color/white" />
+
+        <Button
+            android:id="@+id/tomorrowButton"
+            android:layout_width="100dp"
+            android:layout_height="48dp"
+            android:text="Tomorrow"
+            android:background="@drawable/button_day_selector"
+            android:textColor="@color/white" />
+    </LinearLayout>
+
+    <!-- Sliding Highlight Indicator -->
+    <View
+        android:id="@+id/activeIndicator"
+        android:layout_width="100dp"
+        android:layout_height="48dp"
+        android:background="@drawable/button_active_indicator"
+        android:layout_below="@id/settingsButton"
+        android:layout_marginTop="32dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginEnd="0dp"
+        android:layout_centerHorizontal="true"
+        android:translationZ="1dp" />
+
+    <TextView
+        android:id="@+id/titleText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hello, Andrei • Saturday"
+        android:textColor="#A175F7"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="12dp" />
+</RelativeLayout>

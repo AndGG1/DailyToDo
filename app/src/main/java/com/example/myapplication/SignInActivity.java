@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.InputType;
@@ -59,6 +60,9 @@ public class SignInActivity extends AppCompatActivity {
                         .putString("username", usernameInput.getText().toString())
                         .putString("password", passwordInput.getText().toString())
                         .apply();
+
+                Intent switchToMainWindowIntent = new Intent(this, MainWindowActivity.class);
+                startActivity(switchToMainWindowIntent);
             }
         });
     }

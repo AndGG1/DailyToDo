@@ -56,7 +56,8 @@ public class WelcomeActivity extends AppCompatActivity {
             welcomeText2.setText("Let's see our schedule for today!");
 
             AnimatorHelper.animateWelcomeSequence(welcomeText, welcomeText2, () -> {
-                //TODO: Main Activity...
+                Intent switchToMainWindowIntent = new Intent(this, MainWindowActivity.class);
+                startActivity(switchToMainWindowIntent);
             });
         }
     }

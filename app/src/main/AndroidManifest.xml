@@ -29,6 +29,12 @@
             android:theme="@style/Theme.MyApplication">
         </activity>
 
+        <activity
+            android:name=".MainWindowActivity"
+            android:exported="true"
+            android:theme="@style/Theme.MyApplication">
+        </activity>
+
     </application>
 
 </manifest>
