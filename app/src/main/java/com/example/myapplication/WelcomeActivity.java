@@ -1,6 +1,10 @@
 package com.example.myapplication;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
 import android.view.animation.BounceInterpolator;
 import android.widget.TextView;
@@ -38,23 +42,42 @@ public class WelcomeActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-        AnimatorHelper.animateWelcomeSequence(welcomeText, welcomeText2);
+        SharedPreferences prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
+        boolean hasSignedInBefore = prefs.getBoolean("hasSignedInBefore", false);
+
+        if (!hasSignedInBefore) {
+            AnimatorHelper.animateWelcomeSequence(welcomeText, welcomeText2, () -> {
+                //After animation, we switch to new SignIn activity
+                Intent switchActivityIntent = new Intent(this, SignInActivity.class);
+                startActivity(switchActivityIntent);
+            });
+        } else {
+            welcomeText.setText("Welcome back, " + prefs.getString("username", "user") + "!");
+            welcomeText2.setText("Let's see our schedule for today!");
+
+            AnimatorHelper.animateWelcomeSequence(welcomeText, welcomeText2, () -> {
+                //TODO: Main Activity...
+            });
         }
     }
+}
 
 class AnimatorHelper {
 
-    public static void animateWelcomeSequence(View firstView, View secondView) {
+    public static void animateWelcomeSequence(View firstView, View secondView, Runnable runnable) {
         prepareView(firstView);
         prepareView(secondView);
 
-        playIntro(firstView, () ->
-                fadeOutAndSlide(firstView, () ->
-                        playIntro(secondView, () ->
-                                fadeOutAndSlide(secondView, null)
-                        )
-                )
-        );
+        // ⏳ Cooldown before starting animation sequence
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+            playIntro(firstView, () ->
+                    fadeOutAndSlide(firstView, () ->
+                            playIntro(secondView, () ->
+                                    fadeOutAndSlide(secondView, runnable)
+                            )
+                    )
+            );
+        }, 750); // Delay = 500ms
     }
 
     private static void prepareView(View view) {

@@ -3,17 +3,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    android:background="@drawable/purple_background">
 
     <TextView
         android:id="@+id/welcomeText"
-        android:layout_width="158dp"
-        android:layout_height="34dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingEnd="15dp"
         android:layout_centerInParent="true"
         android:background="@drawable/rounded_background"
         android:paddingLeft="10dp"
         android:text="@string/welcome_tag"
-        android:textColor="#FFFFFF"
+        android:textColor="@color/white"
         android:textSize="26sp"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -25,13 +27,14 @@
 
     <TextView
         android:id="@+id/welcomeText2"
-        android:layout_width="277dp"
-        android:layout_height="27dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingEnd="15dp"
         android:layout_centerInParent="true"
         android:background="@drawable/rounded_background"
         android:paddingLeft="15dp"
         android:text="@string/welcome_tag_2"
-        android:textColor="#FFFFFF"
+        android:textColor="@color/white"
         android:textSize="18sp"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
