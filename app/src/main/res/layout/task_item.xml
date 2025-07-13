@@ -1,0 +1,38 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:padding="24dp"
+    android:background="@drawable/task_background"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="16dp"
+    android:gravity="center_vertical">
+
+    <CheckBox
+        android:id="@+id/taskCheckbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:paddingEnd="16dp"
+        android:buttonTint="@color/purple_500" />
+
+    <TextView
+        android:id="@+id/bulletDot"
+        android:text="•"
+        android:textSize="18sp"
+        android:textColor="#A175F7"
+        android:paddingEnd="16dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <EditText
+        android:id="@+id/taskInput"
+        android:hint="Task"
+        android:textSize="18sp"
+        android:textColor="#333333"
+        android:background="@null"
+        android:singleLine="true"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1" />
+</LinearLayout>

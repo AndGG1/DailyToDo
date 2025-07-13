@@ -6,7 +6,20 @@
     android:paddingTop="48dp"
     android:background="@color/white">
 
-    <!-- Settings Button (Top Right) -->
+    <!-- Title Text -->
+    <TextView
+        android:id="@+id/titleText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hello, Andrei • Saturday"
+        android:textColor="#A175F7"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="12dp" />
+
+    <!-- Settings Button -->
     <ImageView
         android:id="@+id/settingsButton"
         android:layout_width="32dp"
@@ -29,6 +42,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="32dp">
 
+        <!-- Buttons: Yesterday / Today / Tomorrow -->
         <Button
             android:id="@+id/yesterdayButton"
             android:layout_width="100dp"
@@ -56,28 +70,43 @@
             android:textColor="@color/white" />
     </LinearLayout>
 
-    <!-- Sliding Highlight Indicator -->
+    <!-- Highlight Indicator -->
     <View
         android:id="@+id/activeIndicator"
         android:layout_width="100dp"
         android:layout_height="48dp"
         android:background="@drawable/button_active_indicator"
-        android:layout_below="@id/settingsButton"
-        android:layout_marginTop="32dp"
-        android:layout_marginStart="0dp"
-        android:layout_marginEnd="0dp"
+        android:layout_below="@id/dayButtonGroup"
         android:layout_centerHorizontal="true"
+        android:layout_marginTop="-48dp"
         android:translationZ="1dp" />
 
-    <TextView
-        android:id="@+id/titleText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello, Andrei • Saturday"
-        android:textColor="#A175F7"
-        android:textSize="22sp"
-        android:textStyle="bold"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="12dp" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/taskRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/dayButtonGroup"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="96dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:padding="16dp"
+        android:clipToPadding="false"
+        android:scrollbars="vertical" />
+
+    <!-- Floating Add Task Button -->
+    <ImageButton
+        android:id="@+id/addTaskButton"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="24dp"
+        android:layout_marginEnd="24dp"
+        android:background="@drawable/plus_button_background"
+        android:src="@android:drawable/ic_input_add"
+        android:contentDescription="Add Task"
+        app:tint="@color/white" />
+
 </RelativeLayout>

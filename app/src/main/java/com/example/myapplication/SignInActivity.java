@@ -58,7 +58,6 @@ public class SignInActivity extends AppCompatActivity {
                         .edit()
                         .putBoolean("hasSignedInBefore", true)
                         .putString("username", usernameInput.getText().toString())
-                        .putString("password", passwordInput.getText().toString())
                         .apply();
 
                 Intent switchToMainWindowIntent = new Intent(this, MainWindowActivity.class);
