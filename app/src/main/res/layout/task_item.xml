@@ -1,11 +1,20 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
-    android:padding="24dp"
+    android:padding="16dp"
     android:background="@drawable/task_background"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="16dp"
+    android:layout_marginBottom="12dp"
     android:gravity="center_vertical">
+
+    <TextView
+        android:id="@+id/bulletDot"
+        android:text="•"
+        android:textSize="18sp"
+        android:textColor="#A175F7"
+        android:paddingEnd="12dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
     <CheckBox
         android:id="@+id/taskCheckbox"
@@ -16,15 +25,6 @@
         android:paddingEnd="16dp"
         android:buttonTint="@color/purple_500" />
 
-    <TextView
-        android:id="@+id/bulletDot"
-        android:text="•"
-        android:textSize="18sp"
-        android:textColor="#A175F7"
-        android:paddingEnd="16dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
     <EditText
         android:id="@+id/taskInput"
         android:hint="Task"
@@ -32,7 +32,34 @@
         android:textColor="#333333"
         android:background="@null"
         android:singleLine="true"
+        android:layout_weight="1"
         android:layout_width="0dp"
+        android:layout_height="wrap_content" />
+
+    <!-- 🔘 Circle Buttons for Task Status -->
+    <LinearLayout
+        android:id="@+id/statusButtons"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1" />
+        android:orientation="horizontal"
+        android:paddingStart="8dp"
+        android:gravity="end">
+
+        <ImageButton
+            android:id="@+id/regularButton"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:background="@drawable/circle_regular"
+            android:contentDescription="Regular task"
+            android:tooltipText="Regular task"
+            android:layout_marginEnd="8dp" />
+
+        <ImageButton
+            android:id="@+id/importantButton"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:background="@drawable/circle_important"
+            android:contentDescription="Important task"
+            android:tooltipText="Important task" />
+    </LinearLayout>
 </LinearLayout>

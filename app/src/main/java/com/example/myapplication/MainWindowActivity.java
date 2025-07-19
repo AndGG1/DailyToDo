@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.view.LayoutInflater;
@@ -107,6 +108,9 @@ public class MainWindowActivity extends AppCompatActivity {
                 int toPos = to.getAdapterPosition();
                 Collections.swap(taskList, fromPos, toPos);
                 adapter.notifyItemMoved(fromPos, toPos);
+
+                taskList.get(toPos).setPos(toPos);
+                taskList.get(fromPos).setPos(fromPos);
                 return true;
             }
 
@@ -121,7 +125,10 @@ public class MainWindowActivity extends AppCompatActivity {
 
         // Add new task
         addTaskButton.setOnClickListener(v -> {
-            taskList.add(new TaskItem(""));
+            TaskItem newTaskItem = new TaskItem("");
+            newTaskItem.setPos(taskList.size());
+
+            taskList.add(newTaskItem);
             adapter.notifyItemInserted(taskList.size() - 1);
             taskRecyclerView.scrollToPosition(taskList.size() - 1);
         });
@@ -130,7 +137,10 @@ public class MainWindowActivity extends AppCompatActivity {
     // Task model
     public static class TaskItem {
         private String text;
+        private int pos;
         private boolean isCompleted;
+
+        private boolean isImportant;
 
         public TaskItem(String text) {
             this.text = text;
@@ -140,8 +150,14 @@ public class MainWindowActivity extends AppCompatActivity {
         public String getText() { return text; }
         public void setText(String text) { this.text = text; }
 
+        public int getPos() {return pos;}
+        public void setPos(int pos) {this.pos = pos;}
+
         public boolean isCompleted() { return isCompleted; }
         public void setCompleted(boolean completed) { this.isCompleted = completed; }
+
+        public boolean isImportant() { return isImportant; }
+        public void setImportant(boolean value) { this.isImportant = value; }
     }
 
     // Day navigation helper
@@ -171,14 +187,28 @@ public class MainWindowActivity extends AppCompatActivity {
             this.taskList = taskList;
         }
 
+        private void sortTasks() {
+            Collections.sort(taskList, (a, b) -> {
+                int priorityComparison = Boolean.compare(b.isImportant(), a.isImportant()); // Important tasks first
+                if (priorityComparison != 0) return priorityComparison;
+
+                return Integer.compare(a.getPos(), b.getPos()); // Original position (ascending)
+            });
+            notifyDataSetChanged();
+        }
+
         public static class TaskViewHolder extends RecyclerView.ViewHolder {
             EditText taskInput;
             CheckBox taskCheckbox;
+            ImageButton regularButton, importantButton;
 
             public TaskViewHolder(View itemView) {
                 super(itemView);
                 taskInput = itemView.findViewById(R.id.taskInput);
                 taskCheckbox = itemView.findViewById(R.id.taskCheckbox);
+
+                regularButton = itemView.findViewById(R.id.regularButton);
+                importantButton = itemView.findViewById(R.id.importantButton);
             }
         }
 
@@ -212,6 +242,26 @@ public class MainWindowActivity extends AppCompatActivity {
             // Listener for checkbox state
             holder.taskCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
                 item.setCompleted(isChecked);
+            });
+
+
+            if (item.isImportant()) {
+                holder.taskInput.setTextColor(Color.parseColor("#812BE0"));
+                holder.itemView.setBackgroundResource(R.drawable.task_background_important);
+            } else {
+                holder.taskInput.setTextColor(Color.parseColor("#333333"));
+                holder.itemView.setBackgroundResource(R.drawable.task_background);
+            }
+
+            // Button actions
+            holder.regularButton.setOnClickListener(v -> {
+                item.setImportant(false);
+                sortTasks(); // move to normal position
+            });
+
+            holder.importantButton.setOnClickListener(v -> {
+                item.setImportant(true);
+                sortTasks(); // move to top
             });
         }
 
