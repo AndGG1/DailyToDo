@@ -75,10 +75,10 @@
         android:id="@+id/activeIndicator"
         android:layout_width="100dp"
         android:layout_height="48dp"
-        android:background="@drawable/button_active_indicator"
         android:layout_below="@id/dayButtonGroup"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="-48dp"
+        android:background="@drawable/button_active_indicator"
         android:translationZ="1dp" />
 
     <androidx.recyclerview.widget.RecyclerView
@@ -108,5 +108,13 @@
         android:src="@android:drawable/ic_input_add"
         android:contentDescription="Add Task"
         app:tint="@color/white" />
+
+    <FrameLayout
+        android:id="@+id/taskSettingsHost"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_alignParentBottom="true"
+        />
 
 </RelativeLayout>

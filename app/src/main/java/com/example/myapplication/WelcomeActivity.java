@@ -49,6 +49,9 @@ public class WelcomeActivity extends AppCompatActivity {
             AnimatorHelper.animateWelcomeSequence(welcomeText, welcomeText2, () -> {
                 //After animation, we switch to new SignIn activity
                 Intent switchActivityIntent = new Intent(this, SignInActivity.class);
+                switchActivityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                        | Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
                 startActivity(switchActivityIntent);
             });
         } else {
@@ -57,6 +60,9 @@ public class WelcomeActivity extends AppCompatActivity {
 
             AnimatorHelper.animateWelcomeSequence(welcomeText, welcomeText2, () -> {
                 Intent switchToMainWindowIntent = new Intent(this, MainWindowActivity.class);
+                switchToMainWindowIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                        | Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
                 startActivity(switchToMainWindowIntent);
             });
         }

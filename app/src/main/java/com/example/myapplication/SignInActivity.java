@@ -7,6 +7,8 @@ import android.text.InputType;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class SignInActivity extends AppCompatActivity {
@@ -17,6 +19,15 @@ public class SignInActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_second_main);
+
+        OnBackPressedCallback callback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                // Do nothing or custom logic
+            }
+        };
+
+        getOnBackPressedDispatcher().addCallback(this, callback);
 
         EditText usernameInput = findViewById(R.id.usernameInput);
         EditText passwordInput = findViewById(R.id.passwordInput);
