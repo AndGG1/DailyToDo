@@ -11,6 +11,8 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import Database.FirebaseVerify;
+
 public class WelcomeActivity extends AppCompatActivity {
 
     TextView welcomeText;
@@ -46,16 +48,31 @@ public class WelcomeActivity extends AppCompatActivity {
         boolean hasSignedInBefore = prefs.getBoolean("hasSignedInBefore", false);
 
         if (!hasSignedInBefore) {
-            AnimatorHelper.animateWelcomeSequence(welcomeText, welcomeText2, () -> {
-                //After animation, we switch to new SignIn activity
-                Intent switchActivityIntent = new Intent(this, SignInActivity.class);
-                switchActivityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-                        | Intent.FLAG_ACTIVITY_CLEAR_TASK
-                        | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-                startActivity(switchActivityIntent);
+            FirebaseVerify.getSignedInUsername(this, name -> {
+                if (!name.equals("No user") && !name.equals("Error")) {
+                    welcomeText.setText("Welcome back, " + name + "!");
+                    welcomeText2.setText("Let's see our schedule for today!");
+
+                    AnimatorHelper.animateWelcomeSequence(welcomeText, welcomeText2, () -> {
+                        Intent switchToMainWindowIntent = new Intent(this, MainWindowActivity.class);
+                        switchToMainWindowIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                                | Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+                        startActivity(switchToMainWindowIntent);
+                    });
+                } else {
+                    AnimatorHelper.animateWelcomeSequence(welcomeText, welcomeText2, () -> {
+                        Intent switchActivityIntent = new Intent(this, SignInActivity.class);
+                        switchActivityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                                | Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+                        startActivity(switchActivityIntent);
+                    });
+                }
             });
         } else {
-            welcomeText.setText("Welcome back, " + prefs.getString("username", "user") + "!");
+            String savedName = prefs.getString("username", "user");
+            welcomeText.setText("Welcome back, " + savedName + "!");
             welcomeText2.setText("Let's see our schedule for today!");
 
             AnimatorHelper.animateWelcomeSequence(welcomeText, welcomeText2, () -> {
