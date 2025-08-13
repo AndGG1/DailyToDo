@@ -14,7 +14,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.myapplication.R;
 import com.example.myapplication.main_activity_usages.MainWindowActivity;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import Database.RegisterUsages.CryptoUtils;
+import Database.RegisterUsages.FirebaseVerify;
 
 public class SignInActivity extends AppCompatActivity {
 
@@ -57,19 +60,25 @@ public class SignInActivity extends AppCompatActivity {
             String username = usernameInput.getText().toString().trim();
             String password = passwordInput.getText().toString().trim();
 
-            boolean isUsernameValid = username.length() >= 3 && username.length() <= 12;
+            AtomicBoolean isUsernameValid = new AtomicBoolean(username.length() >= 3 && username.length() <= 12);
             boolean isPasswordValid = password.length() >= 8 && password.length() <= 12;
 
+            if (isUsernameValid.get()) {
+                FirebaseVerify.checkIfEmailExists(username, (exists) -> {
+                    isUsernameValid.set(!exists);
+                });
+            }
+
             usernameInput.setBackgroundResource(
-                    isUsernameValid ? R.drawable.input_background : R.drawable.input_background_error);
-            usernameInput.setTextColor(isUsernameValid ? Color.parseColor("#4A148C") : Color.RED);
+                    isUsernameValid.get() ? R.drawable.input_background : R.drawable.input_background_error);
+            usernameInput.setTextColor(isUsernameValid.get() ? Color.parseColor("#4A148C") : Color.RED);
 
 
             passwordInput.setBackgroundResource(
                     isPasswordValid ? R.drawable.input_background : R.drawable.input_background_error);
             passwordInput.setTextColor(isPasswordValid ? Color.parseColor("#4A148C") : Color.RED);
 
-            if (isUsernameValid && isPasswordValid) {
+            if (isUsernameValid.get() && isPasswordValid) {
                 try {
                     getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
                             .edit()
@@ -79,6 +88,8 @@ public class SignInActivity extends AppCompatActivity {
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
+
+                FirebaseVerify.registerUser(username, password);
 
                 Intent switchToMainWindowIntent = new Intent(this, MainWindowActivity.class);
                 startActivity(switchToMainWindowIntent);

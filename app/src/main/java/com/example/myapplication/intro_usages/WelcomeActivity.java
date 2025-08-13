@@ -14,7 +14,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.myapplication.R;
 import com.example.myapplication.main_activity_usages.MainWindowActivity;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import Database.RegisterUsages.CryptoUtils;
+import Database.RegisterUsages.FirebaseVerify;
 
 public class WelcomeActivity extends AppCompatActivity {
 
@@ -48,9 +51,15 @@ public class WelcomeActivity extends AppCompatActivity {
         super.onStart();
 
         SharedPreferences prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
-        boolean hasSignedInBefore = prefs.getBoolean("hasSignedInBefore", false);
+        AtomicBoolean hasSignedInBefore = new AtomicBoolean(prefs.getBoolean("hasSignedInBefore", false));
 
-        if (!hasSignedInBefore) {
+        if (!hasSignedInBefore.get()) {
+            FirebaseVerify.getSignedInUsername((exists, name) -> {
+                hasSignedInBefore.set(exists);
+            });
+        }
+
+        if (!hasSignedInBefore.get()) {
             AnimatorHelper.animateWelcomeSequence(welcomeText, welcomeText2, () -> {
                 //After animation, we switch to new SignIn activity
                 Intent switchActivityIntent = new Intent(this, SignInActivity.class);
@@ -62,7 +71,9 @@ public class WelcomeActivity extends AppCompatActivity {
         } else {
             try {
                 String username = prefs.getString("username", "user") + "!";
-                welcomeText.setText("Welcome back, " + CryptoUtils.decrypt(username));
+                CryptoUtils.decrypt(username, u -> {
+                    welcomeText.setText("Welcome back, " + u + "!");
+                });
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }

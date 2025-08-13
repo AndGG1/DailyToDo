@@ -2,6 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- ✅ Permissions for internet access and network state -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -12,13 +16,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyApplication"
         tools:targetApi="31">
+
+        <!-- Your activities here -->
         <activity
             android:name=".intro_usages.WelcomeActivity"
             android:exported="true"
             android:theme="@style/Theme.MyApplication">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -26,15 +31,12 @@
         <activity
             android:name=".intro_usages.SignInActivity"
             android:exported="true"
-            android:theme="@style/Theme.MyApplication">
-        </activity>
+            android:theme="@style/Theme.MyApplication" />
 
         <activity
             android:name=".main_activity_usages.MainWindowActivity"
             android:exported="true"
-            android:theme="@style/Theme.MyApplication">
-        </activity>
+            android:theme="@style/Theme.MyApplication" />
 
     </application>
-
 </manifest>

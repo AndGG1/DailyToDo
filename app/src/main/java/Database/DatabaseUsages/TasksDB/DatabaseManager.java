@@ -27,20 +27,20 @@ public class DatabaseManager {
         dbHelper.close();
     }
 
-    public long insert(String name, String desc, String checked) {
+    public long insert(String name, String desc, String checked, int val) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(DatabaseHelper.SUBJECT, name);
         contentValues.put(DatabaseHelper.DESC, desc);
         contentValues.put(DatabaseHelper.CHECKED, checked);
 
-        return database.insert(DatabaseHelper.TABLE_NAME, null, contentValues);
+        return database.insert(DatabaseHelper.TABLE_NAME + val, null, contentValues);
     }
 
-    public Cursor fetch() {
+    public Cursor fetch(int val) {
         String[] columns = new String[] {DatabaseHelper._ID,
         DatabaseHelper.SUBJECT, DatabaseHelper.DESC, DatabaseHelper.CHECKED};
 
-        Cursor cursor = database.query(DatabaseHelper.TABLE_NAME,
+        Cursor cursor = database.query(DatabaseHelper.TABLE_NAME + val,
                 columns,
                 null,
                 null,
@@ -54,22 +54,22 @@ public class DatabaseManager {
         return cursor;
     }
 
-    public int update(long _id, String name, String desc, String checked) {
+    public int update(long _id, String name, String desc, String checked, int val) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(DatabaseHelper.SUBJECT, name);
         contentValues.put(DatabaseHelper.DESC, desc);
         contentValues.put(DatabaseHelper.CHECKED, checked);
 
         return database.update(
-                DatabaseHelper.TABLE_NAME,
+                DatabaseHelper.TABLE_NAME + val,
                 contentValues,
                 DatabaseHelper._ID + " = " + _id,
                 null);
     }
 
-    public void delete(long _id) {
+    public void delete(long _id, int val) {
         database.delete(
-                DatabaseHelper.TABLE_NAME,
+                DatabaseHelper.TABLE_NAME + val,
                 DatabaseHelper._ID + " = " + _id,
                 null);
     }

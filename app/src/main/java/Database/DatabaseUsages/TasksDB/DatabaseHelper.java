@@ -5,7 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
-    public static final String TABLE_NAME = "TASKS";
+    public static String TABLE_NAME = "TASKS_";
 
     public static final String _ID = "_id";
     public static final String SUBJECT = "subject";
@@ -13,7 +13,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String CHECKED = "checked";
 
     static final String DB_NAME = "DailyToDo_App.DB";
-    static final int DB_VERSION = 1;
+    static final int DB_VERSION = 3;
 
     private static final String CREATE_TABLE =
             "CREATE TABLE " + TABLE_NAME + "("
@@ -28,12 +28,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(CREATE_TABLE);
+        db.execSQL(CREATE_TABLE.replace(TABLE_NAME, TABLE_NAME + "1"));
+        db.execSQL(CREATE_TABLE.replace(TABLE_NAME, TABLE_NAME + "2"));
+        db.execSQL(CREATE_TABLE.replace(TABLE_NAME, TABLE_NAME + "3"));
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + (TABLE_NAME + "1"));
+        db.execSQL("DROP TABLE IF EXISTS " + (TABLE_NAME + "2"));
+        db.execSQL("DROP TABLE IF EXISTS " + (TABLE_NAME + "3"));
+
         onCreate(db);
     }
 }

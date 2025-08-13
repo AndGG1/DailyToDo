@@ -2,6 +2,8 @@ package com.example.myapplication.main_activity_usages;
 
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -26,6 +28,7 @@ import java.util.List;
 
 import Database.DatabaseUsages.TasksDB.DatabaseManager;
 import Database.RegisterUsages.CryptoUtils;
+import Database.RegisterUsages.FirebaseVerify;
 
 public class MainWindowActivity extends AppCompatActivity {
 
@@ -39,6 +42,9 @@ public class MainWindowActivity extends AppCompatActivity {
     private TaskAdapter adapter;
     private List<TaskItemBean> taskList;
     private DatabaseManager dbManager;
+
+
+    private boolean isLoading = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,33 +70,62 @@ public class MainWindowActivity extends AppCompatActivity {
         Days days = new Days();
         days.calculateDays();
 
-        String username;
         try {
-            username = CryptoUtils.decrypt(getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
-                    .getString("username", "user"));
+            CryptoUtils.decrypt(getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
+                    .getString("username", "user"), u -> {
+                String username = u.equals("-1") ? "user" : u;
+
+                if (username.equals("user")) {
+                    FirebaseVerify.getSignedInUsername((exists, name) -> {
+                        titleText.setText((username + " - Tasks").toUpperCase() + " • " + days.getToday());
+                    });
+                } else titleText.setText((username + " - Tasks").toUpperCase() + " • " + days.getToday());
+
+                yesterdayButton.setOnClickListener(v -> {
+                    if (isLoading) return;
+                    setDayButtonsEnabled(false);
+
+                    String selectedDay = days.getYesterday(); // 👈 This updates currentDay to 1
+                    titleText.setText((username + " - Tasks").toUpperCase() + " • " + selectedDay);
+                    activeIndicator.animate().x(v.getLeft() + ((View) v.getParent()).getLeft()).setDuration(300).start();
+                    addTaskButton.setVisibility(View.GONE); // Yesterday shouldn't allow adding tasks
+
+                    loadTasksForDay(days.getCurrentDay()); // 👈 Now this returns 1 correctly
+
+                    new Handler(Looper.getMainLooper()).postDelayed(() -> setDayButtonsEnabled(true), 500);
+                });
+
+                todayButton.setOnClickListener(v -> {
+                    if (isLoading) return;
+                    setDayButtonsEnabled(false);
+
+                    String selectedDay = days.getToday(); // Updates currentDay to 2
+                    titleText.setText((username + " - Tasks").toUpperCase() + " • " + selectedDay);
+                    activeIndicator.animate().x(v.getLeft() + ((View) v.getParent()).getLeft()).setDuration(300).start();
+                    addTaskButton.setVisibility(View.VISIBLE);
+
+                    loadTasksForDay(days.getCurrentDay()); // Now returns 2
+
+                    new Handler(Looper.getMainLooper()).postDelayed(() -> setDayButtonsEnabled(true), 500);
+                });
+
+                tomorrowButton.setOnClickListener(v -> {
+                    if (isLoading) return;
+                    setDayButtonsEnabled(false);
+
+                    String selectedDay = days.getTomorrow(); // Updates currentDay to 3
+                    titleText.setText((username + " - Tasks").toUpperCase() + " • " + selectedDay);
+                    activeIndicator.animate().x(v.getLeft() + ((View) v.getParent()).getLeft()).setDuration(300).start();
+                    addTaskButton.setVisibility(View.VISIBLE);
+
+                    loadTasksForDay(days.getCurrentDay()); // Now returns 3
+
+                    new Handler(Looper.getMainLooper()).postDelayed(() -> setDayButtonsEnabled(true), 500);
+                });
+            });
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-
-        titleText.setText((username + " - tasks").toUpperCase() + " • " + days.getToday());
-
-        yesterdayButton.setOnClickListener(v -> {
-            titleText.setText((username + " - Tasks").toUpperCase() + " • " + days.getYesterday());
-            activeIndicator.animate().x(v.getLeft() + ((View) v.getParent()).getLeft()).setDuration(300).start();
-            addTaskButton.setVisibility(View.GONE);
-        });
-
-        todayButton.setOnClickListener(v -> {
-            titleText.setText((username + " - Tasks").toUpperCase() + " • " + days.getToday());
-            activeIndicator.animate().x(v.getLeft() + ((View) v.getParent()).getLeft()).setDuration(300).start();
-            addTaskButton.setVisibility(View.VISIBLE);
-        });
-
-        tomorrowButton.setOnClickListener(v -> {
-            titleText.setText((username + " - Tasks").toUpperCase() + " • " + days.getTomorrow());
-            activeIndicator.animate().x(v.getLeft() + ((View) v.getParent()).getLeft()).setDuration(300).start();
-            addTaskButton.setVisibility(View.VISIBLE);
-        });
 
         settingsButton.setOnClickListener(v -> {
             v.animate().rotationBy(360f).setDuration(400).withEndAction(() -> v.setRotation(0f)).start();
@@ -98,29 +133,11 @@ public class MainWindowActivity extends AppCompatActivity {
 
         taskList = new ArrayList<>();
 
-        // Load tasks from database
-        Cursor cursor = dbManager.fetch();
-        if (cursor != null && cursor.moveToFirst()) {
-            do {
-                long id = cursor.getLong(cursor.getColumnIndexOrThrow("_id"));
-                String text = cursor.getString(cursor.getColumnIndexOrThrow("subject"));
-                String desc = cursor.getString(cursor.getColumnIndexOrThrow("description"));
-                String checked = cursor.getString(cursor.getColumnIndexOrThrow("checked"));
-
-                TaskItemBean task = new TaskItemBean(text);
-                task.setDbId(id);
-                task.setImportant("important".equals(desc));
-                task.setCompleted("1".equals(checked));
-                task.setPos(taskList.size());
-
-                taskList.add(task);
-            } while (cursor.moveToNext());
-            cursor.close();
-        }
-
-        adapter = new TaskAdapter(this, taskList, dbManager);
+        adapter = new TaskAdapter(this, taskList, dbManager, days);
         taskRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         taskRecyclerView.setAdapter(adapter);
+
+        loadTasksForDay(2);
 
         ItemTouchHelper.SimpleCallback touchHelperCallback = new ItemTouchHelper.SimpleCallback(
                 ItemTouchHelper.UP | ItemTouchHelper.DOWN, ItemTouchHelper.RIGHT
@@ -143,7 +160,7 @@ public class MainWindowActivity extends AppCompatActivity {
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 int position = viewHolder.getAdapterPosition();
                 TaskItemBean task = taskList.get(position);
-                dbManager.delete(task.getDbId());
+                dbManager.delete(task.getDbId(), days.getCurrentDay());
                 taskList.remove(position);
                 adapter.notifyItemRemoved(position);
             }
@@ -153,7 +170,7 @@ public class MainWindowActivity extends AppCompatActivity {
         addTaskButton.setOnClickListener(v -> {
             TaskItemBean newTaskItem = new TaskItemBean("");
             newTaskItem.setPos(taskList.size());
-            long id = dbManager.insert(newTaskItem.getText(), "regular", "0");
+            long id = dbManager.insert(newTaskItem.getText(), "regular", "0", days.getCurrentDay());
             newTaskItem.setDbId(id);
 
             taskList.add(newTaskItem);
@@ -166,5 +183,43 @@ public class MainWindowActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         dbManager.close();
+    }
+
+    private void loadTasksForDay(int dayValue) {
+        if (isLoading) return; // Prevent overlapping loads
+        isLoading = true;
+
+        taskList.clear();
+        adapter.notifyDataSetChanged();
+
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+            Cursor cursor = dbManager.fetch(dayValue);
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    long id = cursor.getLong(cursor.getColumnIndexOrThrow("_id"));
+                    String text = cursor.getString(cursor.getColumnIndexOrThrow("subject"));
+                    String desc = cursor.getString(cursor.getColumnIndexOrThrow("description"));
+                    String checked = cursor.getString(cursor.getColumnIndexOrThrow("checked"));
+
+                    TaskItemBean task = new TaskItemBean(text);
+                    task.setDbId(id);
+                    task.setImportant("important".equals(desc));
+                    task.setCompleted("1".equals(checked));
+                    task.setPos(taskList.size());
+
+                    taskList.add(task);
+                } while (cursor.moveToNext());
+                cursor.close();
+            }
+
+            adapter.notifyDataSetChanged();
+            isLoading = false; // ✅ Unlock after load
+        }, 300); // Optional delay to simulate load time
+    }
+
+    private void setDayButtonsEnabled(boolean enabled) {
+        yesterdayButton.setEnabled(enabled);
+        todayButton.setEnabled(enabled);
+        tomorrowButton.setEnabled(enabled);
     }
 }

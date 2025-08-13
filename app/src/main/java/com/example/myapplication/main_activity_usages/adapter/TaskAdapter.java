@@ -21,6 +21,7 @@ import com.example.myapplication.R;
 import com.example.myapplication.main_activity_usages.FragmentUsage.EmptyFragment;
 import com.example.myapplication.main_activity_usages.FragmentUsage.TaskSettingsFragment;
 import com.example.myapplication.main_activity_usages.bean_data_usage.TaskItemBean;
+import com.example.myapplication.main_activity_usages.time_class.Days;
 
 import java.util.Collections;
 import java.util.List;
@@ -31,10 +32,12 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
     private final List<TaskItemBean> taskList;
     private final DatabaseManager dbManager;
     private String newestSettingsPos = "";
+    private final Days days;
 
-    public TaskAdapter(Context context, List<TaskItemBean> taskList, DatabaseManager dbManager) {
+    public TaskAdapter(Context context, List<TaskItemBean> taskList, DatabaseManager dbManager, Days days) {
         this.taskList = taskList;
         this.dbManager = dbManager;
+        this.days = days;
     }
 
     private void sortTasks() {
@@ -88,7 +91,8 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
                         item.getDbId(),
                         newText,
                         item.isImportant() ? "important" : "regular",
-                        item.isCompleted() ? "1" : "0"
+                        item.isCompleted() ? "1" : "0",
+                        days.getCurrentDay()
                 );
             }
         });
@@ -99,7 +103,8 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
                     item.getDbId(),
                     item.getText(),
                     item.isImportant() ? "important" : "regular",
-                    isChecked ? "1" : "0"
+                    isChecked ? "1" : "0",
+                    days.getCurrentDay()
             );
         });
 
@@ -117,7 +122,8 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
                     item.getDbId(),
                     item.getText(),
                     "regular",
-                    item.isCompleted() ? "1" : "0"
+                    item.isCompleted() ? "1" : "0",
+                    days.getCurrentDay()
             );
             sortTasks();
         });
@@ -128,7 +134,9 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
                     item.getDbId(),
                     item.getText(),
                     "important",
-                    item.isCompleted() ? "1" : "0"
+                    item.isCompleted() ? "1" : "0",
+                    days.getCurrentDay()
+
             );
             sortTasks();
         });
@@ -178,3 +186,4 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         return taskList.size();
     }
 }
+
