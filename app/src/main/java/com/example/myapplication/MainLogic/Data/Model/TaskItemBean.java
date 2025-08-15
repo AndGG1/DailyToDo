@@ -1,4 +1,4 @@
-package com.example.myapplication.main_activity_usages.bean_data_usage;
+package com.example.myapplication.MainLogic.Data.Model;
 
 import java.security.SecureRandom;
 import java.util.UUID;

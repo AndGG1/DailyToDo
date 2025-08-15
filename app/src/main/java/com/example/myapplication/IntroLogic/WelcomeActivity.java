@@ -1,4 +1,4 @@
-package com.example.myapplication.intro_usages;
+package com.example.myapplication.IntroLogic;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,7 +12,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.myapplication.R;
-import com.example.myapplication.main_activity_usages.MainWindowActivity;
+import com.example.myapplication.MainLogic.UI.MainWindowActivity;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 

@@ -73,4 +73,13 @@ public class DatabaseManager {
                 DatabaseHelper._ID + " = " + _id,
                 null);
     }
+
+    public int update(long id, int day, ContentValues values) {
+        return database.update(
+                DatabaseHelper.TABLE_NAME + day,
+                values,
+                DatabaseHelper._ID + " = ?",
+                new String[]{String.valueOf(id)}
+        );
+    }
 }

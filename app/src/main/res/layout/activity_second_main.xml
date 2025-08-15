@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/stoke_line_background"
-    tools:context=".intro_usages.SignInActivity"
+    tools:context=".IntroLogic.SignInActivity"
     android:padding="32dp">
 
     <!-- Title -->

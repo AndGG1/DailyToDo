@@ -1,4 +1,4 @@
-package com.example.myapplication.main_activity_usages.FragmentUsage;
+package com.example.myapplication.MainLogic.UI.Fragments;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

@@ -1,4 +1,4 @@
-package com.example.myapplication.main_activity_usages.time_class;
+package com.example.myapplication.MainLogic.Data.Model;
 
 import android.util.Log;
 
