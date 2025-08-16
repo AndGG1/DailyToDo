@@ -26,6 +26,7 @@ public class TaskViewModel extends AndroidViewModel {
     private void loadTasks(int dayValue) {
         List<TaskItemBean> tasks = repository.loadTasksForDay(dayValue);
         tasksLiveData.setValue(tasks);
+        sortTasks();
     }
 
     public LiveData<List<TaskItemBean>> getTasks(int dayValue) {
@@ -43,5 +44,18 @@ public class TaskViewModel extends AndroidViewModel {
 
     public void updateTask(TaskItemBean task, int dayValue) {
         repository.updateTask(task, dayValue);
+        sortTasks();
+    }
+
+    private void sortTasks() {
+        tasksLiveData.getValue().sort((a, b) -> {
+            int priorityComparison = Boolean.compare(b.isImportant(), a.isImportant());
+            if (priorityComparison != 0) return priorityComparison;
+            return Integer.compare(a.getPos(), b.getPos());
+        });
+    }
+
+    public void closeDBManager() {
+        repository.closeDbManager();
     }
 }

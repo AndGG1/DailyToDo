@@ -1,5 +1,6 @@
-package com.example.myapplication.main_activity_usages.adapter;
+package com.example.myapplication.MainLogic.UI;
 
+import android.app.Application;
 import android.content.Context;
 import android.graphics.Color;
 import android.util.Log;
@@ -18,35 +19,24 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication.R;
-import com.example.myapplication.main_activity_usages.FragmentUsage.EmptyFragment;
-import com.example.myapplication.main_activity_usages.FragmentUsage.TaskSettingsFragment;
-import com.example.myapplication.main_activity_usages.bean_data_usage.TaskItemBean;
-import com.example.myapplication.main_activity_usages.time_class.Days;
+import com.example.myapplication.MainLogic.UI.Fragments.EmptyFragment;
+import com.example.myapplication.MainLogic.UI.Fragments.TaskSettingsFragment;
+import com.example.myapplication.MainLogic.Data.Model.TaskItemBean;
+import com.example.myapplication.MainLogic.Data.Model.Days;
 
-import java.util.Collections;
 import java.util.List;
 
-import Database.DatabaseUsages.TasksDB.DatabaseManager;
 
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder> {
     private final List<TaskItemBean> taskList;
-    private final DatabaseManager dbManager;
+    private final TaskViewModel viewModel;
     private String newestSettingsPos = "";
     private final Days days;
 
-    public TaskAdapter(Context context, List<TaskItemBean> taskList, DatabaseManager dbManager, Days days) {
-        this.taskList = taskList;
-        this.dbManager = dbManager;
+    public TaskAdapter(Context context, Days days) {
+        viewModel = new TaskViewModel((Application) context);
         this.days = days;
-    }
-
-    private void sortTasks() {
-        Collections.sort(taskList, (a, b) -> {
-            int priorityComparison = Boolean.compare(b.isImportant(), a.isImportant());
-            if (priorityComparison != 0) return priorityComparison;
-            return Integer.compare(a.getPos(), b.getPos());
-        });
-        notifyDataSetChanged();
+        this.taskList = viewModel.getTasks(days.getCurrentDay()).getValue();
     }
 
     public static class TaskViewHolder extends RecyclerView.ViewHolder {
@@ -87,25 +77,13 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
             if (!hasFocus) {
                 String newText = holder.taskInput.getText().toString();
                 item.setText(newText);
-                dbManager.update(
-                        item.getDbId(),
-                        newText,
-                        item.isImportant() ? "important" : "regular",
-                        item.isCompleted() ? "1" : "0",
-                        days.getCurrentDay()
-                );
+                viewModel.updateTask(item, days.getCurrentDay());
             }
         });
 
         holder.taskCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
             item.setCompleted(isChecked);
-            dbManager.update(
-                    item.getDbId(),
-                    item.getText(),
-                    item.isImportant() ? "important" : "regular",
-                    isChecked ? "1" : "0",
-                    days.getCurrentDay()
-            );
+            viewModel.updateTask(item, days.getCurrentDay());
         });
 
         if (item.isImportant()) {
@@ -118,27 +96,12 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
 
         holder.regularButton.setOnClickListener(v -> {
             item.setImportant(false);
-            dbManager.update(
-                    item.getDbId(),
-                    item.getText(),
-                    "regular",
-                    item.isCompleted() ? "1" : "0",
-                    days.getCurrentDay()
-            );
-            sortTasks();
+            viewModel.updateTask(item, days.getCurrentDay());
         });
 
         holder.importantButton.setOnClickListener(v -> {
             item.setImportant(true);
-            dbManager.update(
-                    item.getDbId(),
-                    item.getText(),
-                    "important",
-                    item.isCompleted() ? "1" : "0",
-                    days.getCurrentDay()
-
-            );
-            sortTasks();
+            viewModel.updateTask(item, days.getCurrentDay());
         });
 
         holder.arrowButton.setOnClickListener(v -> {

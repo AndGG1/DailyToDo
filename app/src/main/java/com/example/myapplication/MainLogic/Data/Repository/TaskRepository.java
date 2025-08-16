@@ -59,4 +59,8 @@ public class TaskRepository {
         String checked = task.isCompleted() ? "1" : "0";
         dbManager.update(task.getDbId(), task.getText(), desc, checked, dayValue);
     }
+
+    public void closeDbManager() {
+        dbManager.close();
+    }
 }
