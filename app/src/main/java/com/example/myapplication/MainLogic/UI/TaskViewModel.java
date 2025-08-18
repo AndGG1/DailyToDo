@@ -1,41 +1,28 @@
 package com.example.myapplication.MainLogic.UI;
 
-import android.app.Application;
+import android.content.Context;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.AndroidViewModel;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 
 import com.example.myapplication.MainLogic.Data.Model.TaskItemBean;
 import com.example.myapplication.MainLogic.Data.Repository.TaskRepository;
 
 import java.util.List;
 
-public class TaskViewModel extends AndroidViewModel {
+public class TaskViewModel  {
     private final TaskRepository repository;
-    private final MutableLiveData<List<TaskItemBean>> tasksLiveData = new MutableLiveData<>();
-    private final int DEFAULT_DAY_VALUE = 2;
 
-    public TaskViewModel(@NonNull Application application) {
-        super(application);
-        repository = new TaskRepository(application);
-        loadTasks(DEFAULT_DAY_VALUE);
+    public TaskViewModel(@NonNull Context context) {
+        repository = new TaskRepository(context);
     }
 
-    private void loadTasks(int dayValue) {
-        List<TaskItemBean> tasks = repository.loadTasksForDay(dayValue);
-        tasksLiveData.setValue(tasks);
-        sortTasks();
+    public void loadTasks(List<TaskItemBean> tasks, int dayValue, TaskAdapter adapter) {
+        repository.loadTasksForDay(tasks, dayValue, adapter);
+        adapter.sortTasks();
     }
 
-    public LiveData<List<TaskItemBean>> getTasks(int dayValue) {
-        loadTasks(dayValue);
-        return tasksLiveData;
-    }
-
-    public void insertTask(TaskItemBean task, int dayValue) {
-        repository.insertTask(task, dayValue);
+    public long insertTask(TaskItemBean task, int dayValue) {
+        return repository.insertTask(task, dayValue);
     }
 
     public void deleteTask(TaskItemBean task, int dayValue) {
@@ -44,15 +31,6 @@ public class TaskViewModel extends AndroidViewModel {
 
     public void updateTask(TaskItemBean task, int dayValue) {
         repository.updateTask(task, dayValue);
-        sortTasks();
-    }
-
-    private void sortTasks() {
-        tasksLiveData.getValue().sort((a, b) -> {
-            int priorityComparison = Boolean.compare(b.isImportant(), a.isImportant());
-            if (priorityComparison != 0) return priorityComparison;
-            return Integer.compare(a.getPos(), b.getPos());
-        });
     }
 
     public void closeDBManager() {

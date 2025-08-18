@@ -4,8 +4,8 @@ import android.content.Context;
 import android.database.Cursor;
 
 import com.example.myapplication.MainLogic.Data.Model.TaskItemBean;
+import com.example.myapplication.MainLogic.UI.TaskAdapter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import Database.DatabaseUsages.TasksDB.DatabaseManager;
@@ -16,8 +16,8 @@ public class TaskRepository {
         dbManager = new DatabaseManager(context).open();
     }
 
-    public List<TaskItemBean> loadTasksForDay(int dayValue) {
-        List<TaskItemBean> taskList = new ArrayList<>();
+    public void loadTasksForDay(List<TaskItemBean> tasks, int dayValue, TaskAdapter adapter) {
+        tasks.clear();
 
         Cursor cursor = dbManager.fetch(dayValue);
         if (cursor != null && cursor.moveToFirst()) {
@@ -31,14 +31,14 @@ public class TaskRepository {
                 task.setDbId(id);
                 task.setImportant("important".equals(desc));
                 task.setCompleted("1".equals(checked));
-                task.setPos(taskList.size());
+                task.setPos(tasks.size());
 
-                taskList.add(task);
+                tasks.add(task);
             } while (cursor.moveToNext());
 
             cursor.close();
         }
-        return taskList;
+        adapter.notifyDataSetChanged();
     }
 
     public long insertTask(TaskItemBean task, int dayValue) {

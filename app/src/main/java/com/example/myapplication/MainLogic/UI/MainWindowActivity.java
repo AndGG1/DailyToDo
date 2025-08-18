@@ -47,10 +47,10 @@ public class MainWindowActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_third_main);
 
-
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
-            public void handleOnBackPressed() {}
+            public void handleOnBackPressed() {
+            }
         });
 
         activeIndicator = findViewById(R.id.activeIndicator);
@@ -60,60 +60,71 @@ public class MainWindowActivity extends AppCompatActivity {
         tomorrowButton = findViewById(R.id.tomorrowButton);
         addTaskButton = findViewById(R.id.addTaskButton);
         settingsButton = findViewById(R.id.settingsButton);
-
         taskRecyclerView = findViewById(R.id.taskRecyclerView);
-        viewModel = new TaskViewModel(this.getApplication());
+
 
         Days days = new Days();
         days.calculateDays();
+        taskList = new ArrayList<>();
+        adapter = new TaskAdapter(this, taskList, days);
+        taskRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        taskRecyclerView.setAdapter(adapter);
+        viewModel = adapter.getViewModel();
+
 
         try {
-            String encryptedUsername = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
-                    .getString("username", "user");
-
-            CryptoUtils.decrypt(encryptedUsername, u -> {
+            CryptoUtils.decrypt(getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
+                    .getString("username", "user"), u -> {
                 String username = u.equals("-1") ? "user" : u;
 
-                Runnable updateTitle = () -> titleText.setText(
-                        (username + " - Tasks").toUpperCase() + " • " + days.getToday());
-
                 if (username.equals("user")) {
-                    FirebaseVerify.getSignedInUsername((exists, name) -> updateTitle.run());
-                } else {
-                    updateTitle.run();
-                }
+                    FirebaseVerify.getSignedInUsername((exists, name) -> {
+                        titleText.setText((username + " - Tasks").toUpperCase() + " • " + days.getToday());
+                    });
+                } else
+                    titleText.setText((username + " - Tasks").toUpperCase() + " • " + days.getToday());
 
-                View.OnClickListener dayClickListener = v -> {
+                yesterdayButton.setOnClickListener(v -> {
                     if (isLoading) return;
                     setDayButtonsEnabled(false);
 
-                    String selectedDay;
-                    boolean showAddButton;
-
-                    if (v == yesterdayButton) {
-                        selectedDay = days.getYesterday();
-                        showAddButton = false;
-                    } else if (v == todayButton) {
-                        selectedDay = days.getToday();
-                        showAddButton = true;
-                    } else {
-                        selectedDay = days.getTomorrow();
-                        showAddButton = true;
-                    }
-
+                    String selectedDay = days.getYesterday();
                     titleText.setText((username + " - Tasks").toUpperCase() + " • " + selectedDay);
                     activeIndicator.animate().x(v.getLeft() + ((View) v.getParent()).getLeft()).setDuration(300).start();
-                    addTaskButton.setVisibility(showAddButton ? View.VISIBLE : View.GONE);
+                    addTaskButton.setVisibility(View.GONE); // Yesterday shouldn't allow adding tasks
 
-                    taskList = viewModel.getTasks(days.getCurrentDay()).getValue();
-                    adapter.notifyDataSetChanged();
+                    viewModel.loadTasks(taskList, days.getCurrentDay(), adapter);
 
                     new Handler(Looper.getMainLooper()).postDelayed(() -> setDayButtonsEnabled(true), 500);
-                };
+                });
 
-                yesterdayButton.setOnClickListener(dayClickListener);
-                todayButton.setOnClickListener(dayClickListener);
-                tomorrowButton.setOnClickListener(dayClickListener);
+                todayButton.setOnClickListener(v -> {
+                    if (isLoading) return;
+                    setDayButtonsEnabled(false);
+
+                    String selectedDay = days.getToday();
+                    titleText.setText((username + " - Tasks").toUpperCase() + " • " + selectedDay);
+                    activeIndicator.animate().x(v.getLeft() + ((View) v.getParent()).getLeft()).setDuration(300).start();
+                    addTaskButton.setVisibility(View.VISIBLE);
+
+                    viewModel.loadTasks(taskList, days.getCurrentDay(), adapter);
+
+                    new Handler(Looper.getMainLooper()).postDelayed(() -> setDayButtonsEnabled(true), 500);
+                });
+
+                tomorrowButton.setOnClickListener(v -> {
+                    if (isLoading) return;
+                    setDayButtonsEnabled(false);
+
+                    String selectedDay = days.getTomorrow();
+                    titleText.setText((username + " - Tasks").toUpperCase() + " • " + selectedDay);
+                    activeIndicator.animate().x(v.getLeft() + ((View) v.getParent()).getLeft()).setDuration(300).start();
+                    addTaskButton.setVisibility(View.VISIBLE);
+
+                    viewModel.loadTasks(taskList, days.getCurrentDay(), adapter);
+
+                    new Handler(Looper.getMainLooper()).postDelayed(() -> setDayButtonsEnabled(true), 500);
+                });
             });
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -123,13 +134,7 @@ public class MainWindowActivity extends AppCompatActivity {
             v.animate().rotationBy(360f).setDuration(400).withEndAction(() -> v.setRotation(0f)).start();
         });
 
-        taskList = new ArrayList<>();
-        adapter = new TaskAdapter(this, days);
-        taskRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        taskRecyclerView.setAdapter(adapter);
-
-        taskList = viewModel.getTasks(2).getValue();
-        adapter.notifyDataSetChanged();
+        viewModel.loadTasks(taskList, days.getCurrentDay(), adapter);
 
         ItemTouchHelper.SimpleCallback touchHelperCallback = new ItemTouchHelper.SimpleCallback(
                 ItemTouchHelper.UP | ItemTouchHelper.DOWN, ItemTouchHelper.RIGHT
@@ -162,10 +167,10 @@ public class MainWindowActivity extends AppCompatActivity {
         addTaskButton.setOnClickListener(v -> {
             TaskItemBean newTaskItem = new TaskItemBean("");
             newTaskItem.setPos(taskList.size());
+            newTaskItem.setImportant(false);
             newTaskItem.setCompleted(false);
             newTaskItem.setText(newTaskItem.getText());
-            newTaskItem.setImportant(false);
-            viewModel.insertTask(newTaskItem, days.getCurrentDay());
+            newTaskItem.setDbId(viewModel.insertTask(newTaskItem, days.getCurrentDay()));
 
             taskList.add(newTaskItem);
             adapter.notifyItemInserted(taskList.size() - 1);

@@ -1,6 +1,7 @@
 package com.example.myapplication.MainLogic.UI;
 
-import android.app.Application;
+import static com.example.myapplication.MainLogic.UI.Fragments.TaskSettingsFragmentKt.TaskSettingsFragment_cmp;
+
 import android.content.Context;
 import android.graphics.Color;
 import android.util.Log;
@@ -14,29 +15,43 @@ import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.compose.ui.ModifierKt;
+import androidx.compose.ui.platform.ComposeView;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.myapplication.R;
 import com.example.myapplication.MainLogic.UI.Fragments.EmptyFragment;
 import com.example.myapplication.MainLogic.UI.Fragments.TaskSettingsFragment;
+import com.example.myapplication.MainLogic.UI.Fragments.TaskSettingsFragmentKt;
+import com.example.myapplication.R;
 import com.example.myapplication.MainLogic.Data.Model.TaskItemBean;
 import com.example.myapplication.MainLogic.Data.Model.Days;
 
+import java.lang.reflect.Modifier;
+import java.util.Collections;
 import java.util.List;
-
 
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder> {
     private final List<TaskItemBean> taskList;
-    private final TaskViewModel viewModel;
     private String newestSettingsPos = "";
     private final Days days;
+    private final TaskViewModel viewModel;
 
-    public TaskAdapter(Context context, Days days) {
-        viewModel = new TaskViewModel((Application) context);
+    public TaskAdapter(Context context, List<TaskItemBean> taskList, Days days) {
+        this.taskList = taskList;
         this.days = days;
-        this.taskList = viewModel.getTasks(days.getCurrentDay()).getValue();
+        viewModel = new TaskViewModel(context);
+    }
+
+    public void sortTasks() {
+        Collections.sort(taskList, (a, b) -> {
+            int priorityComparison = Boolean.compare(b.isImportant(), a.isImportant());
+            if (priorityComparison != 0) return priorityComparison;
+            return Integer.compare(a.getPos(), b.getPos());
+        });
+        notifyDataSetChanged();
     }
 
     public static class TaskViewHolder extends RecyclerView.ViewHolder {
@@ -97,11 +112,13 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         holder.regularButton.setOnClickListener(v -> {
             item.setImportant(false);
             viewModel.updateTask(item, days.getCurrentDay());
+            sortTasks();
         });
 
         holder.importantButton.setOnClickListener(v -> {
             item.setImportant(true);
             viewModel.updateTask(item, days.getCurrentDay());
+            sortTasks();
         });
 
         holder.arrowButton.setOnClickListener(v -> {
@@ -112,8 +129,9 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
                 FragmentManager fragmentManager = activity.getSupportFragmentManager();
                 FragmentTransaction transaction = fragmentManager.beginTransaction();
 
-                TaskSettingsFragment fragment = new TaskSettingsFragment();
-                if (!holder.arrowButton.getContentDescription().toString().equals("down_arrow")) {
+                Fragment fragment = new TaskSettingsFragment(); // Use your Compose-based fragment
+
+                if (!"down_arrow".equals(holder.arrowButton.getContentDescription().toString())) {
                     holder.arrowButton.setContentDescription("down_arrow");
                     holder.arrowButton.setImageResource(R.drawable.semicircle_arrow_down);
 
@@ -142,11 +160,16 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
                 Log.e("Adapter", "Context is not an AppCompatActivity");
             }
         });
+
     }
 
     @Override
     public int getItemCount() {
         return taskList.size();
+    }
+
+    public TaskViewModel getViewModel() {
+        return viewModel;
     }
 }
 

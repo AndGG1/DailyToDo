@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
+//TODO: Add position column
 public class DatabaseManager {
 
     private DatabaseHelper dbHelper;
