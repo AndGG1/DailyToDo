@@ -19,7 +19,7 @@
 
         <!-- Your activities here -->
         <activity
-            android:name=".IntroLogic.WelcomeActivity"
+            android:name=".IntroLogic.UI.WelcomeActivity"
             android:exported="true"
             android:theme="@style/Theme.MyApplication">
             <intent-filter>
@@ -29,7 +29,7 @@
         </activity>
 
         <activity
-            android:name=".IntroLogic.SignInActivity"
+            android:name=".IntroLogic.UI.SignInActivity"
             android:exported="true"
             android:theme="@style/Theme.MyApplication" />
 

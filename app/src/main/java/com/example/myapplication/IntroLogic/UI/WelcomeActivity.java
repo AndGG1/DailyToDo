@@ -1,4 +1,4 @@
-package com.example.myapplication.IntroLogic;
+package com.example.myapplication.IntroLogic.UI;
 
 import android.content.Intent;
 import android.content.SharedPreferences;

@@ -1,4 +1,4 @@
-package com.example.myapplication.IntroLogic;
+package com.example.myapplication.IntroLogic.UI;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -11,8 +11,8 @@ import android.widget.ImageView;
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.myapplication.R;
 import com.example.myapplication.MainLogic.UI.MainWindowActivity;
+import com.example.myapplication.R;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 

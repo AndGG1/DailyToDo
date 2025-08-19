@@ -1,85 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/signInLayout"
+    android:id="@+id/taskSettingsHost"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/stoke_line_background"
-    tools:context=".IntroLogic.SignInActivity"
-    android:padding="32dp">
+    android:background="@android:color/transparent"
+    tools:context=".MainLogic.UI.Fragments.TaskSettingsFragment">
 
-    <!-- Title -->
-    <TextView
-        android:id="@+id/signInTitle"
-        android:layout_width="wrap_content"
+    <androidx.compose.ui.platform.ComposeView
+        android:id="@+id/taskSettingsCompose"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Sign In"
-        android:textSize="32sp"
-        android:textColor="#A175F7"
-        android:textStyle="bold"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="24dp"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="60dp" />
-
-    <!-- Username input -->
-    <EditText
-        android:id="@+id/usernameInput"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:hint="Username"
-        android:background="@drawable/input_background"
-        android:paddingStart="12dp"
-        android:paddingEnd="12dp"
-        android:textColor="#4A148C"
-        android:textColorHint="#9575CD"
-        android:layout_below="@id/signInTitle"
-        android:layout_marginTop="24dp" />
-
-    <!-- Password input -->
-    <EditText
-        android:id="@+id/passwordInput"
-        android:layout_width="291dp"
-        android:layout_height="49dp"
-        android:layout_below="@id/usernameInput"
-        android:layout_marginTop="16dp"
-        android:background="@drawable/input_background"
-        android:hint="Password"
-        android:inputType="textPassword"
-        android:paddingStart="12dp"
-        android:paddingEnd="48dp"
-        android:textColor="#4A148C"
-        android:textColorHint="#9575CD" />
-
-    <!-- Toggle Password Visibility -->
-
-    <!-- Sign In Button -->
-
-    <ImageView
-        android:id="@+id/passwordToggle"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_below="@+id/usernameInput"
-        android:layout_alignBottom="@id/passwordInput"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="26dp"
-        android:layout_marginBottom="15dp"
-        android:layout_toEndOf="@+id/passwordInput"
-        android:clickable="true"
-        android:contentDescription="Toggle password visibility"
-        android:focusable="true"
-        android:src="@drawable/ic_visibility_off"
-        app:tint="#A175F7" />
-
-    <Button
-        android:id="@+id/signInButton"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:text="Sign In"
-        android:textColor="#FFFFFF"
-        android:textStyle="bold"
-        android:backgroundTint="#A175F7"
-        android:layout_below="@id/passwordInput"
-        android:layout_marginTop="40dp" />
-</RelativeLayout>
+        android:background="@drawable/task_settings_background"
+        android:padding="12dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.022" />
+</androidx.constraintlayout.widget.ConstraintLayout>
