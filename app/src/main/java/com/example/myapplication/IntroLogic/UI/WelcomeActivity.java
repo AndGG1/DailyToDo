@@ -17,7 +17,7 @@ import com.example.myapplication.MainLogic.UI.MainWindowActivity;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import Database.RegisterUsages.CryptoUtils;
-import Database.RegisterUsages.FirebaseVerify;
+import Database.RegisterUsages.FirebaseVerify_KtDemo;
 
 public class WelcomeActivity extends AppCompatActivity {
 
@@ -54,7 +54,7 @@ public class WelcomeActivity extends AppCompatActivity {
         AtomicBoolean hasSignedInBefore = new AtomicBoolean(prefs.getBoolean("hasSignedInBefore", false));
 
         if (!hasSignedInBefore.get()) {
-            FirebaseVerify.getSignedInUsername((exists, name) -> {
+            FirebaseVerify_KtDemo.getSignedUsername((exists, name) -> {
                 hasSignedInBefore.set(exists);
             });
         }
