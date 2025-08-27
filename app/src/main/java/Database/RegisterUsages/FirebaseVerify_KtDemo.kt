@@ -11,21 +11,25 @@ import com.google.firebase.database.ValueEventListener
 
 val mAuth: FirebaseAuth = FirebaseAuth.getInstance()
 
-fun registerUser(username: String, password: String) {
+interface IsValidCallback {
+    fun onRes(isValid: Boolean)
+}
+
+fun registerUser(username: String, password: String, callback: IsValidCallback) {
     mAuth.createUserWithEmailAndPassword(username.trim() + "@dailytodo.com", password)
         .addOnCompleteListener({ task ->
             if (task.isSuccessful) {
                 val user: FirebaseUser? = mAuth.currentUser
                 if (user != null) {
                     val uid = user.uid;
-
                     val ref: DatabaseReference =
                         FirebaseDatabase.getInstance().getReference("users");
                     ref.child(uid).child("name").setValue(username)
-                } else {
-                    Log.w("Register", "User is still null after delay.")
-                }
+
+                    callback.onRes(true)
+                } else callback.onRes(false)
             } else {
+                callback.onRes(false)
                 Log.w("Register", "User registration failed $username", task.exception)
             }
         })
@@ -58,25 +62,4 @@ fun getSignedUsername(callback: UsernameResCallback) {
             callback.onRes(false, null.toString())
         }
     })
-}
-
-
-interface EmailCheckCallback {
-    fun onCheck(exists: Boolean)
-}
-
-fun checkIfAlreadyAdded(username: String, callback: EmailCheckCallback) {
-    val emailToCheck = username.trim() + "dailytodo.com"
-
-    mAuth.fetchSignInMethodsForEmail(emailToCheck)
-        .addOnCompleteListener({task ->
-            if (task.isSuccessful) run {
-                val signedUp: MutableList<String>? = task.getResult().signInMethods
-                val exists = signedUp != null && !signedUp.isEmpty()
-                callback.onCheck(exists)
-            } else {
-                Log.e("FirebaseVerify", "Error checking email existence", task.exception)
-                callback.onCheck(false)
-            }
-        })
 }

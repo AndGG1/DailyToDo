@@ -1,5 +1,8 @@
 package com.example.myapplication.IntroLogic.UI;
 
+import static Database.RegisterUsages.CyptoUtils_KtDemoKt.decrypt;
+import static Database.RegisterUsages.FirebaseVerify_KtDemoKt.getSignedUsername;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -15,9 +18,6 @@ import com.example.myapplication.R;
 import com.example.myapplication.MainLogic.UI.MainWindowActivity;
 
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import Database.RegisterUsages.CryptoUtils;
-import Database.RegisterUsages.FirebaseVerify_KtDemo;
 
 public class WelcomeActivity extends AppCompatActivity {
 
@@ -54,7 +54,7 @@ public class WelcomeActivity extends AppCompatActivity {
         AtomicBoolean hasSignedInBefore = new AtomicBoolean(prefs.getBoolean("hasSignedInBefore", false));
 
         if (!hasSignedInBefore.get()) {
-            FirebaseVerify_KtDemo.getSignedUsername((exists, name) -> {
+            getSignedUsername((exists, name) -> {
                 hasSignedInBefore.set(exists);
             });
         }
@@ -71,9 +71,7 @@ public class WelcomeActivity extends AppCompatActivity {
         } else {
             try {
                 String username = prefs.getString("username", "user") + "!";
-                CryptoUtils.decrypt(username, u -> {
-                    welcomeText.setText("Welcome back, " + u + "!");
-                });
+                    welcomeText.setText("Welcome back, " + decrypt(username) + "!");
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }

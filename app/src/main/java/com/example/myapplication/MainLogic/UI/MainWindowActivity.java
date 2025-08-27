@@ -1,5 +1,8 @@
 package com.example.myapplication.MainLogic.UI;
 
+import static Database.RegisterUsages.CyptoUtils_KtDemoKt.decrypt;
+import static Database.RegisterUsages.FirebaseVerify_KtDemoKt.getSignedUsername;
+
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -23,9 +26,6 @@ import com.example.myapplication.MainLogic.Data.Model.Days;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import Database.RegisterUsages.CryptoUtils;
-import Database.RegisterUsages.FirebaseVerify;
 
 public class MainWindowActivity extends AppCompatActivity {
 
@@ -73,12 +73,12 @@ public class MainWindowActivity extends AppCompatActivity {
 
 
         try {
-            CryptoUtils.decrypt(getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
-                    .getString("username", "user"), u -> {
+            String u = decrypt(getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
+                    .getString("username", "user"));
                 String username = u.equals("-1") ? "user" : u;
 
                 if (username.equals("user")) {
-                    FirebaseVerify.getSignedInUsername((exists, name) -> {
+                    getSignedUsername((exists, name) -> {
                         titleText.setText((username + " - Tasks").toUpperCase() + " • " + days.getToday());
                     });
                 } else
@@ -125,7 +125,6 @@ public class MainWindowActivity extends AppCompatActivity {
 
                     new Handler(Looper.getMainLooper()).postDelayed(() -> setDayButtonsEnabled(true), 500);
                 });
-            });
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

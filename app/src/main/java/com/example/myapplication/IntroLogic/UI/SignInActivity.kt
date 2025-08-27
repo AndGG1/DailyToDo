@@ -1,10 +1,9 @@
 package com.example.myapplication.IntroLogic.UI
 
+import Database.RegisterUsages.IsValidCallback
 import Database.RegisterUsages.encrypt
-import Database.RegisterUsages.checkIfAlreadyAdded
 import Database.RegisterUsages.registerUser
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.text.InputType
@@ -15,7 +14,6 @@ import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
 import androidx.core.graphics.toColorInt
-import com.example.myapplication.MainLogic.UI.MainWindowActivity
 import com.example.myapplication.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -59,22 +57,10 @@ class SignInActivity : AppCompatActivity() {
             var username = usernameInput.text.toString().trim()
             val password = passwordInput.text.toString().trim()
 
-            var isUsernameValid = username.length in 3..12
-            val isPasswordValid = password.length in 8..12
-            if (isUsernameValid) {
-                checkIfAlreadyAdded(username) { exists: Boolean ->
-                    isUsernameValid = !exists
-                }
-            }
-            usernameInput.setBackgroundResource(
-                if (isUsernameValid) R.drawable.input_background else R.drawable.input_background_error
-            )
-            usernameInput.setTextColor(if (isUsernameValid) "#4A148C".toColorInt() else Color.RED)
+            var isUsernameValid = username.length in 2..20
+            val isPasswordValid = password.length in 4..12
 
-            passwordInput.setBackgroundResource(
-                if (isPasswordValid) R.drawable.input_background else R.drawable.input_background_error
-            )
-            passwordInput.setTextColor(if (isPasswordValid) "#4A148C".toColorInt() else Color.RED)
+            checkValidState(usernameInput, isUsernameValid, passwordInput, isPasswordValid)
 
             if (isUsernameValid && isPasswordValid) {
                 runBlocking {
@@ -83,8 +69,11 @@ class SignInActivity : AppCompatActivity() {
                             getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
                                 .edit {
                                     putBoolean("hasSignedInBefore", true)
-                                        .putString("username",
-                                            withContext(Dispatchers.Default) { encrypt(username) }
+                                        .putString(
+                                            "username",
+                                            withContext(Dispatchers.Default) {
+                                                encrypt(username)
+                                                }
                                         )
                                 }
                         } catch (e: Exception) {
@@ -93,11 +82,28 @@ class SignInActivity : AppCompatActivity() {
                     }
                 }
 
-                registerUser(username, password)
-
-
-                startActivity(Intent(this, MainWindowActivity::class.java))
+                registerUser(username, password, object : IsValidCallback {
+                    override fun onRes(isValid: Boolean) {
+                        if (!isValid) {
+                            checkValidState(usernameInput, false, passwordInput, false)
+                        }
+                    }
+                })
             }
         })
+    }
+
+    private fun checkValidState(usernameInput : EditText, isUsernameValid: Boolean,
+                                passwordInput: EditText, isPasswordValid: Boolean) {
+
+        usernameInput.setBackgroundResource(
+            if (isUsernameValid) R.drawable.input_background else R.drawable.input_background_error
+        )
+        usernameInput.setTextColor(if (isUsernameValid) "#4A148C".toColorInt() else Color.RED)
+
+        passwordInput.setBackgroundResource(
+            if (isPasswordValid) R.drawable.input_background else R.drawable.input_background_error
+        )
+        passwordInput.setTextColor(if (isPasswordValid) "#4A148C".toColorInt() else Color.RED)
     }
 }
