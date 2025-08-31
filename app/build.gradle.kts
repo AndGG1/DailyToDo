@@ -47,6 +47,7 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:34.0.0"))
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-database") // ✅ Add this for Realtime Database
+    //implementation("com.google.firebase:firebase-admin:latest-version")
 
     // Jetpack & Compose
     implementation(libs.androidx.core.ktx)
@@ -71,8 +72,9 @@ dependencies {
     implementation("androidx.room:room-ktx:2.6.1")
 
     // Testing
+    testImplementation("org.robolectric:robolectric:4.10.3")
     testImplementation(libs.junit)
-    testImplementation(libs.robolectric)
+    testImplementation(libs.androidx.core)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))

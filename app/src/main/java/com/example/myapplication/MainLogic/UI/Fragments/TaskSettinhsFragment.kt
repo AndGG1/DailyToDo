@@ -15,7 +15,6 @@ class TaskSettingsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        // Inflate a layout that contains a ComposeView
         return inflater.inflate(R.layout.fragment_task_settings_panel, container, false)
     }
 
@@ -26,3 +25,4 @@ class TaskSettingsFragment : Fragment() {
         }
     }
 }
+//TODO: Justify

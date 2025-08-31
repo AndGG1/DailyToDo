@@ -12,11 +12,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
-import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -57,6 +55,7 @@ fun SignInTemplate(
         disabledIndicatorColor = Color.Transparent,
         focusedContainerColor = Color.Transparent,
         unfocusedContainerColor = Color.Transparent,
+        focusedTextColor = Color(0xFF9575CD)
     )
 
 
@@ -87,7 +86,8 @@ fun SignInTemplate(
                     color = purple,
                     fontSize = 20.sp,
                     modifier = Modifier
-                        .weight(1f),
+                        .weight(1f)
+                        .scale(1.25f),
                     textAlign = TextAlign.Center,
                     fontWeight = FontWeight.Bold
                     )
@@ -103,7 +103,7 @@ fun SignInTemplate(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(50.dp)
+                        .height(52.dp)
                         .padding(horizontal = 18.dp)
                         .border(
                             width = 1.5.dp,
@@ -119,6 +119,7 @@ fun SignInTemplate(
                         colors = colors2,
                         modifier = Modifier
                             .fillMaxSize()
+                            .padding(1.dp)
                             .background(Color.White, shape = RoundedCornerShape(12.dp))
                     )
                 }
@@ -133,7 +134,7 @@ fun SignInTemplate(
                 Box(
                     modifier = Modifier
                         .weight(1f)
-                        .height(50.dp)
+                        .height(52.dp)
                         .border(
                             width = 1.5.dp,
                             color = Color(0xFF9575CD),
@@ -142,18 +143,22 @@ fun SignInTemplate(
                         .background(Color.White, shape = RoundedCornerShape(4.dp))
                 ) {
                     TextField(
-                        value = username,
-                        onValueChange = { username = it },
+                        value = password,
+                        onValueChange =
+                            {
+                                password = it
+                            },
                         placeholder = { Text("Password", color = Color(0xFF9575CD)) },
                         colors = colors2,
                         modifier = Modifier
                             .fillMaxSize()
+                            .padding(1.dp)
                             .background(Color.White, shape = RoundedCornerShape(12.dp))
                     )
                 }
 
                 Button(
-                    onClick = { /* Handle button click */ },
+                    onClick = { isPasswordVisible = !isPasswordVisible },
                     modifier = Modifier
                         .height(50.dp)
                         .width(70.dp)
@@ -165,11 +170,52 @@ fun SignInTemplate(
                         disabledContainerColor = Color.Transparent,
                     )
                 ) {
-                    Image(painter = painterResource(R.drawable.ic_visibility_off), null)
+
+                    IconButton(onClick = { isPasswordVisible = !isPasswordVisible }) {
+                        Image(
+                            painter = painterResource(
+                                id = if (isPasswordVisible) R.drawable.ic_visibility
+                                else R.drawable.ic_visibility_off
+                            ),
+                            contentDescription = if (isPasswordVisible) "Hide password" else "Show password"
+                        )
+                    }
                 }
             }
 
+            Row(modifier = Modifier
+                .fillMaxSize(),
+                verticalAlignment = Alignment.CenterVertically) {
 
+                Button(
+                    onClick = {
+
+                    },
+                    modifier = Modifier
+                        .height(50.dp)
+                        .fillMaxWidth()
+                        .scale(.85f),
+                    colors = ButtonColors(
+                        disabledContentColor = Color.White,
+                        containerColor = purple,
+                        contentColor = Color.White,
+                        disabledContainerColor = purple,
+                    ),
+                ) {
+
+                    Box(modifier = Modifier
+                        .height(50.dp)
+                        .fillMaxWidth(),
+                        contentAlignment = Alignment.Center
+                        ) {
+                        Text(
+                            text = "Register",
+                            color = Color.White,
+                            fontSize = 20.sp
+                        )
+                    }
+                }
+            }
         }
     }
 }
