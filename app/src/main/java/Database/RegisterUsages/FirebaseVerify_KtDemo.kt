@@ -12,7 +12,7 @@ import com.google.firebase.database.ValueEventListener
 val mAuth: FirebaseAuth = FirebaseAuth.getInstance()
 
 interface IsValidCallback {
-    fun onRes(isValid: Boolean)
+    fun onRes(isValid: Boolean, uid: String?)
 }
 
 fun registerUser(username: String, password: String, callback: IsValidCallback) {
@@ -26,15 +26,19 @@ fun registerUser(username: String, password: String, callback: IsValidCallback) 
                         FirebaseDatabase.getInstance().getReference("users");
                     ref.child(uid).child("name").setValue(username)
 
-                    callback.onRes(true)
-                } else callback.onRes(false)
+                    callback.onRes(true, uid)
+                } else callback.onRes(false, null)
             } else {
-                callback.onRes(false)
+                callback.onRes(false, null)
                 Log.w("Register", "User registration failed $username", task.exception)
             }
         })
 }
 
+//Should be used only on unit tests
+fun removeUser() {
+    mAuth.currentUser?.delete()
+}
 
 interface UsernameResCallback {
     fun onRes(exists: Boolean, username: String)

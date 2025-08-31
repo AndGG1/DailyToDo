@@ -1,5 +1,7 @@
 [versions]
 agp = "8.10.1"
+core = "1.7.0"
+firebaseAdmin = "latest-version"
 kotlin = "2.0.21"
 coreKtx = "1.16.0"
 junit = "4.13.2"
@@ -14,9 +16,12 @@ constraintlayout = "2.2.1"
 mockitoCore = "5.2.0"
 mockitoKotlin = "5.2.0"
 robolectric = "4.15"
+robolectricVersion = "4.10.3"
 
 [libraries]
+androidx-core = { module = "androidx.test:core", version.ref = "core" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+firebase-admin = { module = "com.google.firebase:firebase-admin", version.ref = "firebaseAdmin" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
@@ -36,6 +41,7 @@ androidx-constraintlayout = { group = "androidx.constraintlayout", name = "const
 mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockitoCore" }
 mockito-kotlin = { module = "org.mockito.kotlin:mockito-kotlin", version.ref = "mockitoKotlin" }
 robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
+robolectric-v4103 = { module = "org.robolectric:robolectric", version.ref = "robolectricVersion" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -1,7 +1,5 @@
 package com.example.myapplication.MainLogic.UI;
 
-import static com.example.myapplication.MainLogic.UI.Fragments.TaskSettingsFragmentKt.TaskSettingsFragment_cmp;
-
 import android.content.Context;
 import android.graphics.Color;
 import android.util.Log;
@@ -15,8 +13,6 @@ import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.compose.ui.ModifierKt;
-import androidx.compose.ui.platform.ComposeView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -24,12 +20,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication.MainLogic.UI.Fragments.EmptyFragment;
 import com.example.myapplication.MainLogic.UI.Fragments.TaskSettingsFragment;
-import com.example.myapplication.MainLogic.UI.Fragments.TaskSettingsFragmentKt;
 import com.example.myapplication.R;
 import com.example.myapplication.MainLogic.Data.Model.TaskItemBean;
 import com.example.myapplication.MainLogic.Data.Model.Days;
 
-import java.lang.reflect.Modifier;
 import java.util.Collections;
 import java.util.List;
 

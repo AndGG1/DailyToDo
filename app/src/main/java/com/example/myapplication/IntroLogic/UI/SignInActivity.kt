@@ -4,6 +4,7 @@ import Database.RegisterUsages.IsValidCallback
 import Database.RegisterUsages.encrypt
 import Database.RegisterUsages.registerUser
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.text.InputType
@@ -14,6 +15,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
 import androidx.core.graphics.toColorInt
+import com.example.myapplication.MainLogic.UI.MainWindowActivity
 import com.example.myapplication.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -83,9 +85,11 @@ class SignInActivity : AppCompatActivity() {
                 }
 
                 registerUser(username, password, object : IsValidCallback {
-                    override fun onRes(isValid: Boolean) {
+                    override fun onRes(isValid: Boolean, uid: String?) {
                         if (!isValid) {
                             checkValidState(usernameInput, false, passwordInput, false)
+                        } else {
+                            startActivity(Intent(v.context, MainWindowActivity::class.java));
                         }
                     }
                 })
