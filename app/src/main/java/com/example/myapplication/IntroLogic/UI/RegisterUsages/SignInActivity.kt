@@ -1,4 +1,4 @@
-package com.example.myapplication.IntroLogic.UI
+package com.example.myapplication.IntroLogic.UI.RegisterUsages
 
 import Database.RegisterUsages.IsValidCallback
 import Database.RegisterUsages.encrypt
@@ -28,7 +28,7 @@ class SignInActivity : AppCompatActivity() {
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_second_main)
+        setContentView(R.layout.activity_second_main_old)
 
         val callback: OnBackPressedCallback = object: OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
@@ -75,7 +75,7 @@ class SignInActivity : AppCompatActivity() {
                                             "username",
                                             withContext(Dispatchers.Default) {
                                                 encrypt(username)
-                                                }
+                                            }
                                         )
                                 }
                         } catch (e: Exception) {

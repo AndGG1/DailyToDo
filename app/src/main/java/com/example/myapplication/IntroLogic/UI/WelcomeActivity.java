@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.myapplication.IntroLogic.UI.RegisterUsages.SignInActivity;
 import com.example.myapplication.R;
 import com.example.myapplication.MainLogic.UI.MainWindowActivity;
 
@@ -71,7 +72,7 @@ public class WelcomeActivity extends AppCompatActivity {
         } else {
             try {
                 String username = prefs.getString("username", "user") + "!";
-                    welcomeText.setText("Welcome back, " + decrypt(username) + "!");
+                welcomeText.setText("Welcome back, " + decrypt(username) + "!");
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
