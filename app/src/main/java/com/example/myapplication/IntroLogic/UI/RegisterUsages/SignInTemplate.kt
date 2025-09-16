@@ -1,8 +1,3 @@
-import Database.RegisterUsages.IsValidCallback
-import Database.RegisterUsages.encrypt
-import Database.RegisterUsages.registerUser
-import android.content.Context.MODE_PRIVATE
-import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -35,19 +30,11 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.content.edit
-import com.example.myapplication.MainLogic.UI.MainWindowActivity
 import com.example.myapplication.R
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 
 @Composable
 fun SignInTemplate(
@@ -56,7 +43,6 @@ fun SignInTemplate(
     // 🔧 State variables
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    var reminder by remember {(mutableStateOf("")) }
     var isPasswordVisible by remember { mutableStateOf(false) }
 
     val purple = Color(0xFF8E68DE)
@@ -128,7 +114,7 @@ fun SignInTemplate(
                 ) {
                     TextField(
                         value = username,
-                        onValueChange = {if (it.toString().length <= 20) username = it },
+                        onValueChange = { username = it },
                         placeholder = { Text("Username", color = Color(0xFF9575CD)) },
                         colors = colors2,
                         modifier = Modifier
@@ -158,13 +144,9 @@ fun SignInTemplate(
                 ) {
                     TextField(
                         value = password,
-                        onValueChange = {
-                            if (it.toString().length <= 8) password = it },
-                        visualTransformation =
-                            if (isPasswordVisible) {
-                            VisualTransformation.None
-                        } else {
-                                PasswordVisualTransformation()
+                        onValueChange =
+                            {
+                                password = it
                             },
                         placeholder = { Text("Password", color = Color(0xFF9575CD)) },
                         colors = colors2,
@@ -173,7 +155,7 @@ fun SignInTemplate(
                             .padding(1.dp)
                             .background(Color.White, shape = RoundedCornerShape(12.dp))
                     )
-                } 
+                }
 
                 Button(
                     onClick = { isPasswordVisible = !isPasswordVisible },

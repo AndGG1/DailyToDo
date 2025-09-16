@@ -1,6 +1,3 @@
-import org.gradle.kotlin.dsl.androidTestImplementation
-import org.gradle.kotlin.dsl.testImplementation
-
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -76,14 +73,12 @@ dependencies {
 
     // Testing
     testImplementation("org.robolectric:robolectric:4.10.3")
-    testImplementation("androidx.test:core:1.5.0") // or latest
-    androidTestImplementation("androidx.test:core:1.5.0")
     testImplementation(libs.junit)
+    testImplementation(libs.androidx.core)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-    implementation(kotlin("test"))
 }

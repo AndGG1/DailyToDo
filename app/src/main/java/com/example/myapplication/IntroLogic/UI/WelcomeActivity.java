@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.myapplication.IntroLogic.UI.RegisterUsages.SignInActivity;
 import com.example.myapplication.R;
 import com.example.myapplication.MainLogic.UI.MainWindowActivity;
 
