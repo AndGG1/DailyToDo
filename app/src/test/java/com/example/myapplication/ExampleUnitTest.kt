@@ -15,12 +15,12 @@ import javax.crypto.BadPaddingException
 import javax.crypto.IllegalBlockSizeException
 import javax.crypto.NoSuchPaddingException
 
-import android.content.Context
-import androidx.test.core.app.ApplicationProvider
 import org.junit.Before
 
 import Database.RegisterUsages.IsValidCallback
 import Database.RegisterUsages.removeUser
+import android.content.Context
+import androidx.test.core.app.ApplicationProvider
 import com.google.firebase.FirebaseApp
 
 
@@ -30,7 +30,7 @@ class DatabaseLogicUnitTest {
 
     @Before
     fun setUp() {
-        context = ApplicationProvider.getApplicationContext()
+        context = ApplicationProvider.getApplicationContext<Context>()
     }
     /*
     Tests encryption logic, this means:

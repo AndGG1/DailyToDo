@@ -9,12 +9,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
-import android.view.animation.BounceInterpolator;
+import android.view.animation.OvershootInterpolator;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.myapplication.IntroLogic.UI.RegisterUsages.SignInActivity;
 import com.example.myapplication.R;
 import com.example.myapplication.MainLogic.UI.MainWindowActivity;
 
@@ -63,7 +62,7 @@ public class WelcomeActivity extends AppCompatActivity {
         if (!hasSignedInBefore.get()) {
             AnimatorHelper.animateWelcomeSequence(welcomeText, welcomeText2, () -> {
                 //After animation, we switch to new SignIn activity
-                Intent switchActivityIntent = new Intent(this, SignInActivity.class);
+                Intent switchActivityIntent = new Intent(this, MainWindowActivity.class);
                 switchActivityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                         | Intent.FLAG_ACTIVITY_CLEAR_TASK
                         | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
@@ -104,7 +103,7 @@ class AnimatorHelper {
                             )
                     )
             );
-        }, 750); // Delay = 500ms
+        }, 750);
     }
 
     private static void prepareView(View view) {
@@ -119,18 +118,20 @@ class AnimatorHelper {
                 .alpha(1f)
                 .scaleX(1f)
                 .scaleY(1f)
-                .setDuration(700)
-                .setInterpolator(new BounceInterpolator())
+                .setDuration(750)
+                .setInterpolator(new OvershootInterpolator())
                 .withEndAction(endAction)
                 .start();
     }
 
     private static void fadeOutAndSlide(View view, Runnable endAction) {
-        view.animate()
-                .alpha(0f)
-                .translationY(-200)
-                .setDuration(1000)
-                .withEndAction(endAction)
-                .start();
+            view.animate()
+                    .alpha(0f)
+                    .scaleX(1.2f)
+                    .scaleY(1.2f)
+                    .setInterpolator(new OvershootInterpolator())
+                    .setDuration(1000)
+                    .withEndAction(endAction)
+                    .start();
     }
 }

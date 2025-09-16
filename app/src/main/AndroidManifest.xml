@@ -28,13 +28,18 @@
             </intent-filter>
         </activity>
 
+<!--        <activity-->
+<!--            android:name=".IntroLogic.UI.RegisterUsages.SignInActivity"-->
+<!--            android:exported="true"-->
+<!--            android:theme="@style/Theme.MyApplication" />-->
+
         <activity
-            android:name=".IntroLogic.UI.SignInActivity"
+            android:name=".MainLogic.UI.MainWindowActivity"
             android:exported="true"
             android:theme="@style/Theme.MyApplication" />
 
         <activity
-            android:name=".MainLogic.UI.MainWindowActivity"
+            android:name=".IntroLogic.UI.RegisterUsages.ComposeTestActivity"
             android:exported="true"
             android:theme="@style/Theme.MyApplication" />
 
