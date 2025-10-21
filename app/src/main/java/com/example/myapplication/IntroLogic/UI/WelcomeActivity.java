@@ -14,7 +14,6 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.myapplication.IntroLogic.UI.RegisterUsages.SignInActivity;
 import com.example.myapplication.R;
 import com.example.myapplication.MainLogic.UI.MainWindowActivity;
 
@@ -59,16 +58,14 @@ public class WelcomeActivity extends AppCompatActivity {
                 hasSignedInBefore.set(exists);
             });
         }
-
-        if (!hasSignedInBefore.get()) {
-            AnimatorHelper.animateWelcomeSequence(welcomeText, welcomeText2, () -> {
-                //After animation, we switch to new SignIn activity
-                Intent switchActivityIntent = new Intent(this, MainWindowActivity.class);
-                switchActivityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-                        | Intent.FLAG_ACTIVITY_CLEAR_TASK
-                        | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-                startActivity(switchActivityIntent);
-            });
+            if (!hasSignedInBefore.get()) {
+                AnimatorHelper.animateWelcomeSequence(welcomeText, welcomeText2, () -> {
+                    Intent switchActivityIntent = new Intent(this, MainWindowActivity.class);
+                    switchActivityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                            | Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+                    startActivity(switchActivityIntent);
+                });
         } else {
             try {
                 String username = prefs.getString("username", "user") + "!";

@@ -1,14 +1,11 @@
 package com.example.myapplication.MainLogic.Data.Model;
 
-import java.security.SecureRandom;
-import java.util.UUID;
-
 public class TaskItemBean {
     private String text;
     private int pos;
     private boolean isCompleted;
     private boolean isImportant;
-    private final String task_id = generateUniqueId();
+    private String task_id = "NOT_INIT";
     private long dbId = -1;
 
     public TaskItemBean(String text) {
@@ -33,10 +30,7 @@ public class TaskItemBean {
     public long getDbId() { return dbId; }
     public void setDbId(long dbId) { this.dbId = dbId; }
 
-    public static String generateUniqueId() {
-        long timestamp = System.nanoTime();
-        UUID uuid = UUID.randomUUID();
-        int randomInt = new SecureRandom().nextInt();
-        return timestamp + "-" + uuid.toString() + "-" + randomInt;
+    public void setTask_id(String task_id) {
+        this.task_id = task_id;
     }
 }

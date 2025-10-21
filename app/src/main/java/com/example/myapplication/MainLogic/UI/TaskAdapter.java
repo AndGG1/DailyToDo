@@ -1,5 +1,7 @@
 package com.example.myapplication.MainLogic.UI;
 
+import static com.example.myapplication.MainLogic.Data.Repository.APIRepositoryKt.getRes;
+
 import android.content.Context;
 import android.graphics.Color;
 import android.util.Log;
@@ -20,39 +22,36 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication.MainLogic.UI.Fragments.EmptyFragment;
 import com.example.myapplication.MainLogic.UI.Fragments.TaskSettingsFragment;
+import com.example.myapplication.MainLogic.UI.ViewModels.EmojiViewModel;
+import com.example.myapplication.MainLogic.UI.ViewModels.TaskViewModel;
 import com.example.myapplication.R;
 import com.example.myapplication.MainLogic.Data.Model.TaskItemBean;
 import com.example.myapplication.MainLogic.Data.Model.Days;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder> {
+    private final EmojiViewModel emojiViewModel;
     private final List<TaskItemBean> taskList;
-    private String newestSettingsPos = "";
-    private final Days days;
     private final TaskViewModel viewModel;
+    private final Days days;
+    private String newestSettingsPos = "";
 
     public TaskAdapter(Context context, List<TaskItemBean> taskList, Days days) {
         this.taskList = taskList;
         this.days = days;
+        emojiViewModel = new EmojiViewModel();
         viewModel = new TaskViewModel(context);
     }
 
-    public void sortTasks() {
-        Collections.sort(taskList, (a, b) -> {
-            int priorityComparison = Boolean.compare(b.isImportant(), a.isImportant());
-            if (priorityComparison != 0) return priorityComparison;
-            return Integer.compare(a.getPos(), b.getPos());
-        });
-        notifyDataSetChanged();
-    }
-
-    public static class TaskViewHolder extends RecyclerView.ViewHolder {
+    public class TaskViewHolder extends RecyclerView.ViewHolder {
         EditText taskInput;
         CheckBox taskCheckbox;
         ImageButton regularButton, importantButton;
         ImageView arrowButton;
+        final String _id = UUID.randomUUID().toString();
 
         public TaskViewHolder(View itemView) {
             super(itemView);
@@ -61,6 +60,8 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
             regularButton = itemView.findViewById(R.id.regularButton);
             importantButton = itemView.findViewById(R.id.importantButton);
             arrowButton = itemView.findViewById(R.id.expandArrow);
+
+            emojiViewModel.addNewState(_id);
         }
     }
 
@@ -69,12 +70,17 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
     public TaskViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.task_item, parent, false);
+
         return new TaskViewHolder(view);
     }
 
+
+
+    //Core functionality
     @Override
     public void onBindViewHolder(@NonNull TaskViewHolder holder, int position) {
         TaskItemBean item = taskList.get(position);
+        item.setTask_id(holder._id);
 
         holder.taskCheckbox.setOnCheckedChangeListener(null);
         holder.taskInput.setText("");
@@ -87,6 +93,8 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
                 String newText = holder.taskInput.getText().toString();
                 item.setText(newText);
                 viewModel.updateTask(item, days.getCurrentDay());
+
+                getRes(holder.taskInput.getText().toString(), holder.taskInput);
             }
         });
 
@@ -157,6 +165,16 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
 
     }
 
+    //Additional methods
+    public void sortTasks() {
+        Collections.sort(taskList, (a, b) -> {
+            int priorityComparison = Boolean.compare(b.isImportant(), a.isImportant());
+            if (priorityComparison != 0) return priorityComparison;
+            return Integer.compare(a.getPos(), b.getPos());
+        });
+        notifyDataSetChanged();
+    }
+
     @Override
     public int getItemCount() {
         return taskList.size();
@@ -165,5 +183,8 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
     public TaskViewModel getViewModel() {
         return viewModel;
     }
-}
 
+    public EmojiViewModel getEmojiViewModel() {
+        return emojiViewModel;
+    }
+}

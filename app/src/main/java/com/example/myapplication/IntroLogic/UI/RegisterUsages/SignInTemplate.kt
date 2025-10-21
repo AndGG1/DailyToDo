@@ -189,7 +189,6 @@ fun SignInTemplate(
 
                 Button(
                     onClick = {
-
                     },
                     modifier = Modifier
                         .height(50.dp)

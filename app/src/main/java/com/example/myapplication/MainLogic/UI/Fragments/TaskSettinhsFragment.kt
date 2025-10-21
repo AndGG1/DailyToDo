@@ -25,4 +25,3 @@ class TaskSettingsFragment : Fragment() {
         }
     }
 }
-//TODO: Justify

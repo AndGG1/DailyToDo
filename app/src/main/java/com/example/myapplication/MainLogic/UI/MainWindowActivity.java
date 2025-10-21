@@ -19,6 +19,8 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.myapplication.MainLogic.UI.ViewModels.EmojiViewModel;
+import com.example.myapplication.MainLogic.UI.ViewModels.TaskViewModel;
 import com.example.myapplication.R;
 import com.example.myapplication.MainLogic.Data.Model.TaskItemBean;
 import com.example.myapplication.MainLogic.Data.Model.Days;
@@ -39,6 +41,7 @@ public class MainWindowActivity extends AppCompatActivity {
     private TaskAdapter adapter;
     private List<TaskItemBean> taskList;
     private TaskViewModel viewModel;
+    private EmojiViewModel emojiViewModel;
 
     private boolean isLoading = false;
 
@@ -70,11 +73,13 @@ public class MainWindowActivity extends AppCompatActivity {
         taskRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         taskRecyclerView.setAdapter(adapter);
         viewModel = adapter.getViewModel();
+        emojiViewModel = adapter.getEmojiViewModel();
 
 
         try {
-            String u = decrypt(getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
-                    .getString("username", "user"));
+//            String u = decrypt(getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
+//                    .getString("username", "user"));
+            String u = "Andrei";
                 String username = u.equals("-1") ? "user" : u;
 
                 if (username.equals("user")) {
@@ -159,6 +164,8 @@ public class MainWindowActivity extends AppCompatActivity {
                 viewModel.deleteTask(task, days.getCurrentDay());
                 taskList.remove(position);
                 adapter.notifyItemRemoved(position);
+
+                emojiViewModel.removeState(task.getTask_id());
             }
         };
         new ItemTouchHelper(touchHelperCallback).attachToRecyclerView(taskRecyclerView);

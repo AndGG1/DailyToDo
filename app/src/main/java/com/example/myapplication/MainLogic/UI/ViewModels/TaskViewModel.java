@@ -1,15 +1,17 @@
-package com.example.myapplication.MainLogic.UI;
+package com.example.myapplication.MainLogic.UI.ViewModels;
 
 import android.content.Context;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.ViewModel;
 
 import com.example.myapplication.MainLogic.Data.Model.TaskItemBean;
 import com.example.myapplication.MainLogic.Data.Repository.TaskRepository;
+import com.example.myapplication.MainLogic.UI.TaskAdapter;
 
 import java.util.List;
 
-public class TaskViewModel  {
+public class TaskViewModel extends ViewModel {
     private final TaskRepository repository;
 
     public TaskViewModel(@NonNull Context context) {

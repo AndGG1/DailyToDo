@@ -43,6 +43,9 @@ android {
 }
 
 dependencies {
+    //ViewModel life-cycle scope
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.9.4")
+
     // ✅ Firebase BOM and Authentication
     implementation(platform("com.google.firebase:firebase-bom:34.0.0"))
     implementation("com.google.firebase:firebase-auth")
@@ -70,6 +73,7 @@ dependencies {
     implementation("androidx.work:work-runtime-ktx:2.9.0")
     implementation("androidx.room:room-runtime:2.6.1")
     implementation("androidx.room:room-ktx:2.6.1")
+    implementation(libs.firebase.crashlytics.buildtools)
 
     // Testing
     testImplementation("org.robolectric:robolectric:4.10.3")
@@ -81,4 +85,16 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    //Networking
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+
+    // Gson converter for JSON serialization/deserialization
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+
+    // OkHttp core (Retrofit uses OkHttp under the hood)
+    implementation("com.squareup.okhttp3:okhttp:4.10.0")
+
+    // OkHttp logging interceptor (for request/response logging)
+    implementation("com.squareup.okhttp3:logging-interceptor:4.10.0")
 }
