@@ -97,4 +97,10 @@ dependencies {
 
     // OkHttp logging interceptor (for request/response logging)
     implementation("com.squareup.okhttp3:logging-interceptor:4.10.0")
+
+    implementation ("androidx.work:work-runtime-ktx:2.9.0")
+
+    // (Optional) If you want to use coroutines inside Worker
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")
+
 }

@@ -83,4 +83,8 @@ public class DatabaseManager {
                 new String[]{String.valueOf(id)}
         );
     }
+
+    public void changeDatabases() {
+        dbHelper.switchDatabases(database);
+    }
 }

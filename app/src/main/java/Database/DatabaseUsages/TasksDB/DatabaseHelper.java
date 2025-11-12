@@ -41,4 +41,30 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         onCreate(db);
     }
+
+    public void switchDatabases(SQLiteDatabase db) {
+        db.beginTransaction();
+        try {
+            // 1. Clear TASKS_1
+            db.execSQL("DELETE FROM " + (TABLE_NAME + "1"));
+
+            // 2. Copy TASKS_2 -> TASKS_1
+            db.execSQL("INSERT INTO " + (TABLE_NAME + "1") +
+                        " SELECT * FROM " + (TABLE_NAME + "2"));
+
+            // 3. Clear TASKS_2
+            db.execSQL("DELETE FROM " + (TABLE_NAME + "2"));
+
+            // 4. Copy TASKS_3 -> TASKS_2
+            db.execSQL("INSERT INTO " + (TABLE_NAME + "2") +
+                        " SELECT * FROM " + (TABLE_NAME + "3"));
+
+            // 5. Clear TASKS_3 (optional: keep empty for reuse)
+            db.execSQL("DELETE FROM " + (TABLE_NAME + "3"));
+
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
+        }
+    }
 }
