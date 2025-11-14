@@ -21,8 +21,6 @@ import org.junit.Before
 
 import Database.RegisterUsages.IsValidCallback
 import Database.RegisterUsages.removeUser
-import android.util.Log
-import com.example.myapplication.MainLogic.Data.Repository.getRes
 import com.google.firebase.FirebaseApp
 
 

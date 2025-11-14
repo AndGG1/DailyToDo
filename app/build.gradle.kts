@@ -102,5 +102,4 @@ dependencies {
 
     // (Optional) If you want to use coroutines inside Worker
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")
-
 }

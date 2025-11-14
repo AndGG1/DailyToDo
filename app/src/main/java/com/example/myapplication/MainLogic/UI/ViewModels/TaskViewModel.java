@@ -11,6 +11,8 @@ import com.example.myapplication.MainLogic.UI.TaskAdapter;
 
 import java.util.List;
 
+import Database.BatchWorker.NotificationWorker;
+
 public class TaskViewModel extends ViewModel {
     private final TaskRepository repository;
 
@@ -37,5 +39,9 @@ public class TaskViewModel extends ViewModel {
 
     public void closeDBManager() {
         repository.closeDbManager();
+    }
+
+    public void runBatchOnActivity() {
+        NotificationWorker.runBatchNotif(repository.getDbManager());
     }
 }

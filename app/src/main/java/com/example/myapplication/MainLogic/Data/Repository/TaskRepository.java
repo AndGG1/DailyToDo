@@ -63,4 +63,8 @@ public class TaskRepository {
     public void closeDbManager() {
         dbManager.close();
     }
+
+    public DatabaseManager getDbManager() {
+        return dbManager;
+    }
 }

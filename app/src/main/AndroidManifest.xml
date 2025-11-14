@@ -19,7 +19,7 @@
 
         <!-- Your activities here -->
         <activity
-            android:name=".MainLogic.UI.MainWindowActivity"
+            android:name=".IntroLogic.UI.WelcomeActivity"
             android:exported="true"
             android:theme="@style/Theme.MyApplication">
             <intent-filter>
@@ -34,12 +34,12 @@
 <!--            android:theme="@style/Theme.MyApplication" />-->
 
         <activity
-            android:name=".IntroLogic.UI.WelcomeActivity"
+            android:name=".IntroLogic.UI.RegisterUsages.ComposeTestActivity"
             android:exported="true"
             android:theme="@style/Theme.MyApplication" />
 
         <activity
-            android:name=".IntroLogic.UI.RegisterUsages.ComposeTestActivity"
+            android:name=".MainLogic.UI.MainWindowActivity"
             android:exported="true"
             android:theme="@style/Theme.MyApplication" />
 

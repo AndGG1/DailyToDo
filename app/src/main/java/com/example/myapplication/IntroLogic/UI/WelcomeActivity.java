@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.myapplication.IntroLogic.UI.RegisterUsages.ComposeTestActivity;
 import com.example.myapplication.R;
 import com.example.myapplication.MainLogic.UI.MainWindowActivity;
 
@@ -60,7 +61,7 @@ public class WelcomeActivity extends AppCompatActivity {
         }
             if (!hasSignedInBefore.get()) {
                 AnimatorHelper.animateWelcomeSequence(welcomeText, welcomeText2, () -> {
-                    Intent switchActivityIntent = new Intent(this, MainWindowActivity.class);
+                    Intent switchActivityIntent = new Intent(this, ComposeTestActivity.class);
                     switchActivityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                             | Intent.FLAG_ACTIVITY_CLEAR_TASK
                             | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);

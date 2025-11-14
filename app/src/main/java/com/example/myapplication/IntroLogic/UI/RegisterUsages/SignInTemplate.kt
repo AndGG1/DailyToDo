@@ -1,3 +1,4 @@
+import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -28,22 +29,28 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.myapplication.IntroLogic.UI.RegisterUsages.registerUserComp
+import com.example.myapplication.MainLogic.UI.MainWindowActivity
 import com.example.myapplication.R
 
 @Composable
 fun SignInTemplate(
-    onSignIn: ((String, String) -> Unit)?,
+    context: android.content.Context
 ) {
     // 🔧 State variables
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var isPasswordVisible by remember { mutableStateOf(false) }
+    var registered by remember { mutableStateOf(false) }
 
     val purple = Color(0xFF8E68DE)
 
@@ -57,6 +64,11 @@ fun SignInTemplate(
         unfocusedContainerColor = Color.Transparent,
         focusedTextColor = Color(0xFF9575CD)
     )
+
+    if (registered) {
+        val switchActivityIntent = Intent(LocalContext.current, MainWindowActivity::class.java)
+        LocalContext.current.startActivity(switchActivityIntent)
+    }
 
 
     // 🧩 Layout surface
@@ -144,6 +156,7 @@ fun SignInTemplate(
                 ) {
                     TextField(
                         value = password,
+                        visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                         onValueChange =
                             {
                                 password = it
@@ -189,6 +202,9 @@ fun SignInTemplate(
 
                 Button(
                     onClick = {
+                        if (username.length in 2..12 && password.length in 4..8) {
+                            registered = registerUserComp(username, password, context)
+                        }
                     },
                     modifier = Modifier
                         .height(50.dp)
@@ -222,5 +238,5 @@ fun SignInTemplate(
 @Preview(showBackground = true, heightDp = 640)
 @Composable
 fun SignInTemplateTest() {
-    SignInTemplate(null)
+    SignInTemplate(LocalContext.current)
 }

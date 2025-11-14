@@ -50,6 +50,7 @@ public class MainWindowActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_third_main);
 
+
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
@@ -75,11 +76,11 @@ public class MainWindowActivity extends AppCompatActivity {
         viewModel = adapter.getViewModel();
         emojiViewModel = adapter.getEmojiViewModel();
 
+        viewModel.runBatchOnActivity();
 
         try {
-//            String u = decrypt(getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
-//                    .getString("username", "user"));
-            String u = "Andrei";
+            String u = decrypt(getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
+                    .getString("username", "user"));
                 String username = u.equals("-1") ? "user" : u;
 
                 if (username.equals("user")) {
