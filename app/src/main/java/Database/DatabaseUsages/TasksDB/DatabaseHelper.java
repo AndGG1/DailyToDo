@@ -11,16 +11,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String SUBJECT = "subject";
     public static final String DESC = "description";
     public static final String CHECKED = "checked";
+    public static final String POSITION = "position";
 
     static final String DB_NAME = "DailyToDo_App.DB";
-    static final int DB_VERSION = 3;
+    static final int DB_VERSION = 4;
 
     private static final String CREATE_TABLE =
             "CREATE TABLE " + TABLE_NAME + "("
                     + _ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                     + SUBJECT + " TEXT NOT NULL, "
                     + DESC + " TEXT NOT NULL, "
-                    + CHECKED + " TEXT NOT NULL)";
+                    + CHECKED + " TEXT NOT NULL,"
+                    + POSITION + " INTEGER NOT NULL)";
 
     public DatabaseHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);

@@ -23,7 +23,7 @@ fun registerUser(username: String, password: String, callback: IsValidCallback) 
                 if (user != null) {
                     val uid = user.uid;
                     val ref: DatabaseReference =
-                        FirebaseDatabase.getInstance().getReference("users");
+                        FirebaseDatabase.getInstance().getReference("users")
                     ref.child(uid).child("name").setValue(username)
 
                     callback.onRes(true, uid)

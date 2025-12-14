@@ -6,11 +6,13 @@ import Database.RegisterUsages.registerUser
 import SignInTemplate
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material3.MaterialTheme
 import androidx.core.content.edit
+import com.example.myapplication.MainLogic.UI.MainWindowActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
@@ -27,28 +29,30 @@ class ComposeTestActivity : AppCompatActivity() {
     }
 }
 
-fun registerUserComp(username: String, password: String, context: Context) : Boolean {
-    var success = true
+fun registerUserComp(username: String, password: String, context: Context) {
+    runBlocking {
+        try {
+            context.getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
+                .edit(commit = true) {
+                    putBoolean("hasSignedInBefore", true)
+                        .putString(
+                            "username",
+                            withContext(Dispatchers.Default) {
+                                encrypt(username)
+                            }
+                        )
+                }
+        } catch (e: Exception) {
+            throw RuntimeException(e)
+        }
+    }
+
+
     registerUser(username, password, object : IsValidCallback {
         override fun onRes(isValid: Boolean, uid: String?) {
             if (isValid) {
-                runBlocking {
-                    try {
-                        val encryptedUsername = withContext(Dispatchers.Default) {
-                            encrypt(username)
-                        }
-
-                        context.getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
-                            .edit {
-                                putBoolean("hasSignedInBefore", true)
-                                    .putString("username", encryptedUsername)
-                            }
-                    } catch (e: Exception) {
-                        success = false
-                    }
-                }
-            } else success = false
+                context.startActivity(Intent(context, MainWindowActivity::class.java))
+            }
         }
     })
-    return success
 }

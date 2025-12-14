@@ -1,4 +1,9 @@
+import Database.RegisterUsages.IsValidCallback
+import Database.RegisterUsages.encrypt
+import Database.RegisterUsages.registerUser
+import android.content.Context.MODE_PRIVATE
 import android.content.Intent
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -38,19 +43,23 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.edit
+import com.example.myapplication.IntroLogic.UI.RegisterUsages.ComposeTestActivity
 import com.example.myapplication.IntroLogic.UI.RegisterUsages.registerUserComp
 import com.example.myapplication.MainLogic.UI.MainWindowActivity
 import com.example.myapplication.R
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 
 @Composable
 fun SignInTemplate(
     context: android.content.Context
 ) {
-    // 🔧 State variables
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var isPasswordVisible by remember { mutableStateOf(false) }
-    var registered by remember { mutableStateOf(false) }
 
     val purple = Color(0xFF8E68DE)
 
@@ -65,18 +74,13 @@ fun SignInTemplate(
         focusedTextColor = Color(0xFF9575CD)
     )
 
-    if (registered) {
-        val switchActivityIntent = Intent(LocalContext.current, MainWindowActivity::class.java)
-        LocalContext.current.startActivity(switchActivityIntent)
-    }
+    val currContent = LocalContext.current
 
-
-    // 🧩 Layout surface
     Surface(
         modifier = Modifier
             .fillMaxSize()
             .background(color = purple)
-            .padding(4.dp),
+            .padding(10.dp),
         color = Color.White
     ) {
         Column(
@@ -196,14 +200,17 @@ fun SignInTemplate(
                 }
             }
 
+            val sm = LocalContext.current
+
             Row(modifier = Modifier
                 .fillMaxSize(),
                 verticalAlignment = Alignment.CenterVertically) {
 
                 Button(
                     onClick = {
-                        if (username.length in 2..12 && password.length in 4..8) {
-                            registered = registerUserComp(username, password, context)
+                        if (username.length in 2..20 && password.length in 6..10) {
+
+                            registerUserComp(username, password, sm)
                         }
                     },
                     modifier = Modifier

@@ -1,40 +1,27 @@
 package com.example.myapplication.MainLogic.UI.ViewModels
 
 import androidx.lifecycle.ViewModel
-import com.example.myapplication.MainLogic.UI.StateManagement
-import com.example.myapplication.MainLogic.UI.UIState
+import com.example.myapplication.AIRequest.UIState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 class EmojiViewModel() : ViewModel() {
-    private val _state = MutableStateFlow<MutableMap<String, UIState>>(StateManagement.listOfStates)
+    private val _state = MutableStateFlow<UIState>(UIState.NOT_FOUND)
 
     //State deciding the "accessory" added to the
     // right of the task-like sentence on each separate task fragment
-    val state: StateFlow<Map<String, UIState>> = _state.asStateFlow()
+    val state: StateFlow<UIState> = _state.asStateFlow()
 
-    fun addNewState(uid: String) {
-        _state.value.put(uid, UIState.NOT_FOUND)
+    fun setSuccess() {
+        _state.value = UIState.SUCCESS
     }
 
-    fun removeState(uid: String) {
-        _state.value.remove(uid)
+    fun setLoading() {
+        _state.value = UIState.LOADING
     }
 
-    fun moveTwoStates() {
-        //TODO
-    }
-
-    fun setSuccess(uid: String) {
-        _state.value.put(uid, UIState.SUCCESS)
-    }
-
-    fun setLoading(uid: String) {
-        _state.value.put(uid, UIState.LOADING)
-    }
-
-    fun setNotFound(uid: String) {
-        _state.value.put(uid, UIState.NOT_FOUND)
+    fun setNotFound() {
+        _state.value = UIState.NOT_FOUND
     }
 }

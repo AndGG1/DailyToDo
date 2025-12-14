@@ -2,10 +2,11 @@ package com.example.myapplication.MainLogic.Data.Repository;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.util.Log;
 
 import com.example.myapplication.MainLogic.Data.Model.TaskItemBean;
-import com.example.myapplication.MainLogic.UI.TaskAdapter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import Database.DatabaseUsages.TasksDB.DatabaseManager;
@@ -16,8 +17,8 @@ public class TaskRepository {
         dbManager = new DatabaseManager(context).open();
     }
 
-    public void loadTasksForDay(List<TaskItemBean> tasks, int dayValue, TaskAdapter adapter) {
-        tasks.clear();
+    public List<TaskItemBean> loadTasksForDay(int dayValue) {
+        List<TaskItemBean> tasks = new ArrayList<>();
 
         Cursor cursor = dbManager.fetch(dayValue);
         if (cursor != null && cursor.moveToFirst()) {
@@ -26,25 +27,27 @@ public class TaskRepository {
                 String text = cursor.getString(cursor.getColumnIndexOrThrow("subject"));
                 String desc = cursor.getString(cursor.getColumnIndexOrThrow("description"));
                 String checked = cursor.getString(cursor.getColumnIndexOrThrow("checked"));
+                int pos = cursor.getInt(cursor.getColumnIndexOrThrow("position"));
 
                 TaskItemBean task = new TaskItemBean(text);
                 task.setDbId(id);
                 task.setImportant("important".equals(desc));
                 task.setCompleted("1".equals(checked));
-                task.setPos(tasks.size());
+                task.setPos(pos);
+                Log.d("test+nga", task.toString());
 
                 tasks.add(task);
             } while (cursor.moveToNext());
 
             cursor.close();
         }
-        adapter.notifyDataSetChanged();
+        return tasks;
     }
 
     public long insertTask(TaskItemBean task, int dayValue) {
         String desc = task.isImportant() ? "important" : "regular";
         String checked = task.isCompleted() ? "1" : "0";
-        long id = dbManager.insert(task.getText(), desc, checked, dayValue);
+        long id = dbManager.insert(task.getText(), desc, checked, dayValue, task.getPos());
         task.setDbId(id);
 
         return id;
@@ -57,7 +60,7 @@ public class TaskRepository {
     public void updateTask(TaskItemBean task, int dayValue) {
         String desc = task.isImportant() ? "important" : "regular";
         String checked = task.isCompleted() ? "1" : "0";
-        dbManager.update(task.getDbId(), task.getText(), desc, checked, dayValue);
+        dbManager.update(task.getDbId(), task.getText(), desc, checked, dayValue, task.getPos());
     }
 
     public void closeDbManager() {

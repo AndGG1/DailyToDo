@@ -33,4 +33,16 @@ public class TaskItemBean {
     public void setTask_id(String task_id) {
         this.task_id = task_id;
     }
+
+    @Override
+    public String toString() {
+        return "TaskItemBean{" +
+                "text='" + text + '\'' +
+                ", pos=" + pos +
+                ", isCompleted=" + isCompleted +
+                ", isImportant=" + isImportant +
+                ", task_id='" + task_id + '\'' +
+                ", dbId=" + dbId +
+                '}';
+    }
 }

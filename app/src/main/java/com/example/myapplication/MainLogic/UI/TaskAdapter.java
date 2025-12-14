@@ -1,7 +1,5 @@
 package com.example.myapplication.MainLogic.UI;
 
-import static com.example.myapplication.MainLogic.Data.Repository.APIRepositoryKt.getRes;
-
 import android.content.Context;
 import android.graphics.Color;
 import android.util.Log;
@@ -22,28 +20,22 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication.MainLogic.UI.Fragments.EmptyFragment;
 import com.example.myapplication.MainLogic.UI.Fragments.TaskSettingsFragment;
-import com.example.myapplication.MainLogic.UI.ViewModels.EmojiViewModel;
-import com.example.myapplication.MainLogic.UI.ViewModels.TaskViewModel;
 import com.example.myapplication.R;
 import com.example.myapplication.MainLogic.Data.Model.TaskItemBean;
 import com.example.myapplication.MainLogic.Data.Model.Days;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder> {
-    private final EmojiViewModel emojiViewModel;
-    private final List<TaskItemBean> taskList;
-    private final TaskViewModel viewModel;
     private final Days days;
     private String newestSettingsPos = "";
+    private final MainWindowActivity.AdapterListener listener;
 
-    public TaskAdapter(Context context, List<TaskItemBean> taskList, Days days) {
-        this.taskList = taskList;
+    public TaskAdapter(MainWindowActivity.AdapterListener listener, Days days) {
         this.days = days;
-        emojiViewModel = new EmojiViewModel();
-        viewModel = new TaskViewModel(context);
+        this.listener = listener;
     }
 
     public class TaskViewHolder extends RecyclerView.ViewHolder {
@@ -60,12 +52,9 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
             regularButton = itemView.findViewById(R.id.regularButton);
             importantButton = itemView.findViewById(R.id.importantButton);
             arrowButton = itemView.findViewById(R.id.expandArrow);
-
-            emojiViewModel.addNewState(_id);
         }
     }
 
-    @NonNull
     @Override
     public TaskViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
@@ -79,7 +68,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
     //Core functionality
     @Override
     public void onBindViewHolder(@NonNull TaskViewHolder holder, int position) {
-        TaskItemBean item = taskList.get(position);
+        TaskItemBean item = listener.getTaskList().get(position);
         item.setTask_id(holder._id);
 
         holder.taskCheckbox.setOnCheckedChangeListener(null);
@@ -92,15 +81,16 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
             if (!hasFocus) {
                 String newText = holder.taskInput.getText().toString();
                 item.setText(newText);
-                viewModel.updateTask(item, days.getCurrentDay());
+                Consumer<Object> func = (a) -> listener.updateT(item, days.getCurrentDay());
 
-                getRes(holder.taskInput.getText().toString(), holder.taskInput);
+                listener.requestEmoji(newText, holder.taskInput, func);
+                Log.d("test+nga", "ratatat");
             }
         });
 
         holder.taskCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
             item.setCompleted(isChecked);
-            viewModel.updateTask(item, days.getCurrentDay());
+            listener.updateT(item, days.getCurrentDay());
         });
 
         if (item.isImportant()) {
@@ -113,13 +103,13 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
 
         holder.regularButton.setOnClickListener(v -> {
             item.setImportant(false);
-            viewModel.updateTask(item, days.getCurrentDay());
+            listener.updateT(item, days.getCurrentDay());
             sortTasks();
         });
 
         holder.importantButton.setOnClickListener(v -> {
             item.setImportant(true);
-            viewModel.updateTask(item, days.getCurrentDay());
+            listener.updateT(item, days.getCurrentDay());
             sortTasks();
         });
 
@@ -167,7 +157,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
 
     //Additional methods
     public void sortTasks() {
-        Collections.sort(taskList, (a, b) -> {
+        Collections.sort(listener.getTaskList(), (a, b) -> {
             int priorityComparison = Boolean.compare(b.isImportant(), a.isImportant());
             if (priorityComparison != 0) return priorityComparison;
             return Integer.compare(a.getPos(), b.getPos());
@@ -177,14 +167,6 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
 
     @Override
     public int getItemCount() {
-        return taskList.size();
-    }
-
-    public TaskViewModel getViewModel() {
-        return viewModel;
-    }
-
-    public EmojiViewModel getEmojiViewModel() {
-        return emojiViewModel;
+        return listener.getTaskList().size();
     }
 }

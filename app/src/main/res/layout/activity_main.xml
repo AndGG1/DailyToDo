@@ -6,11 +6,16 @@
     android:layout_height="match_parent"
     android:background="@drawable/purple_background">
 
+    <!-- Upper-left TextView -->
+
+    <!-- Lower-right TextView -->
+
     <TextView
         android:id="@+id/welcomeText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="216dp"
         android:background="@drawable/rounded_background"
         android:paddingLeft="10dp"
         android:paddingEnd="15dp"
@@ -18,18 +23,15 @@
         android:textColor="@color/white"
         android:textSize="26sp"
         android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.279"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.357" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/welcomeText2"
-        android:layout_width="324dp"
-        android:layout_height="34dp"
-        android:layout_centerInParent="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="348dp"
         android:background="@drawable/rounded_background"
         android:paddingLeft="15dp"
         android:paddingEnd="15dp"
@@ -38,9 +40,6 @@
         android:textSize="22sp"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.657"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.551" />
+        app:layout_constraintEnd_toEndOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

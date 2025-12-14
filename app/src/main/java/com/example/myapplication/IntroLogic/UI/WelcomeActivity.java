@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
+import android.view.animation.AnticipateInterpolator;
 import android.view.animation.OvershootInterpolator;
 import android.widget.TextView;
 
@@ -118,7 +119,7 @@ class AnimatorHelper {
                 .scaleX(1f)
                 .scaleY(1f)
                 .setDuration(750)
-                .setInterpolator(new OvershootInterpolator())
+                .setInterpolator(new AnticipateInterpolator())
                 .withEndAction(endAction)
                 .start();
     }
@@ -128,7 +129,7 @@ class AnimatorHelper {
                     .alpha(0f)
                     .scaleX(1.2f)
                     .scaleY(1.2f)
-                    .setInterpolator(new OvershootInterpolator())
+                    .setInterpolator(new AnticipateInterpolator())
                     .setDuration(1000)
                     .withEndAction(endAction)
                     .start();

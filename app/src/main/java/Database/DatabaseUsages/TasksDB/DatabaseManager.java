@@ -6,7 +6,6 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
-//TODO: Add position column
 public class DatabaseManager {
 
     private DatabaseHelper dbHelper;
@@ -28,18 +27,20 @@ public class DatabaseManager {
         dbHelper.close();
     }
 
-    public long insert(String name, String desc, String checked, int val) {
+    public long insert(String name, String desc, String checked, int val, int pos) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(DatabaseHelper.SUBJECT, name);
         contentValues.put(DatabaseHelper.DESC, desc);
         contentValues.put(DatabaseHelper.CHECKED, checked);
+        contentValues.put(DatabaseHelper.POSITION, pos);
 
         return database.insert(DatabaseHelper.TABLE_NAME + val, null, contentValues);
     }
 
     public Cursor fetch(int val) {
         String[] columns = new String[] {DatabaseHelper._ID,
-        DatabaseHelper.SUBJECT, DatabaseHelper.DESC, DatabaseHelper.CHECKED};
+        DatabaseHelper.SUBJECT, DatabaseHelper.DESC, DatabaseHelper.CHECKED,
+                DatabaseHelper.POSITION};
 
         Cursor cursor = database.query(DatabaseHelper.TABLE_NAME + val,
                 columns,
@@ -55,11 +56,12 @@ public class DatabaseManager {
         return cursor;
     }
 
-    public int update(long _id, String name, String desc, String checked, int val) {
+    public int update(long _id, String name, String desc, String checked, int val, int pos) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(DatabaseHelper.SUBJECT, name);
         contentValues.put(DatabaseHelper.DESC, desc);
         contentValues.put(DatabaseHelper.CHECKED, checked);
+        contentValues.put(DatabaseHelper.POSITION, pos);
 
         return database.update(
                 DatabaseHelper.TABLE_NAME + val,

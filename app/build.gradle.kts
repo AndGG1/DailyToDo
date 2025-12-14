@@ -39,6 +39,7 @@ android {
 
     buildFeatures {
         compose = true
+        viewBinding = true
     }
 }
 
@@ -102,4 +103,18 @@ dependencies {
 
     // (Optional) If you want to use coroutines inside Worker
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")
+
+    // Room runtime
+    implementation ("androidx.room:room-runtime:2.6.1")
+
+    // Room compiler (annotation processor)
+//    kapt ("androidx.room:room-compiler:2.6.1")
+
+    // Optional - Kotlin Extensions and Coroutines support
+    implementation ("androidx.room:room-ktx:2.6.1")
+
+    // Optional - Testing support
+    testImplementation ("androidx.room:room-testing:2.6.1")
+
+
 }
