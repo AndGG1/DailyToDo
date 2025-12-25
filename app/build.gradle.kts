@@ -51,7 +51,9 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:34.0.0"))
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-database") // ✅ Add this for Realtime Database
-    //implementation("com.google.firebase:firebase-admin:latest-version")
+  //  implementation("com.google.firebase:firebase-admin:latest-version")
+    implementation(platform("com.google.firebase:firebase-bom:34.7.0"))
+    implementation("com.google.firebase:firebase-database")
 
     // Jetpack & Compose
     implementation(libs.androidx.core.ktx)

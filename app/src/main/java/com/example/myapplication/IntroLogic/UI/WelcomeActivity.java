@@ -1,6 +1,7 @@
 package com.example.myapplication.IntroLogic.UI;
 
 import static Database.RegisterUsages.CyptoUtils_KtDemoKt.decrypt;
+import static Database.RegisterUsages.FirebaseVerify_KtDemoKt.getCurrUserActivity;
 import static Database.RegisterUsages.FirebaseVerify_KtDemoKt.getSignedUsername;
 
 import android.content.Intent;
@@ -69,6 +70,9 @@ public class WelcomeActivity extends AppCompatActivity {
                     startActivity(switchActivityIntent);
                 });
         } else {
+                String u = decrypt(getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
+                        .getString("username", "user"));
+                getCurrUserActivity(u.equals("-1") ? "user" : u);
             try {
                 String username = prefs.getString("username", "user") + "!";
                 welcomeText.setText("Welcome back, " + decrypt(username) + "!");

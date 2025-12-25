@@ -2,6 +2,7 @@ package com.example.myapplication.MainLogic.UI;
 
 import static com.example.myapplication.AIRequest.FunctionalityKt.aiRequest;
 import static Database.RegisterUsages.CyptoUtils_KtDemoKt.decrypt;
+import static Database.RegisterUsages.FirebaseVerify_KtDemoKt.getCurrUserActivity;
 import static Database.RegisterUsages.FirebaseVerify_KtDemoKt.getSignedUsername;
 
 import android.os.Bundle;
@@ -84,9 +85,9 @@ public class MainWindowActivity extends AppCompatActivity {
             }
         );
 
+        String u = decrypt(getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
+                .getString("username", "user"));
         try {
-            String u = decrypt(getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
-                    .getString("username", "user"));
                 String username = u.equals("-1") ? "user" : u;
 
                 if (username.equals("user")) {
@@ -177,6 +178,8 @@ public class MainWindowActivity extends AppCompatActivity {
                     TaskItemBean task = taskList.get(position);
                     viewModel.deleteTask(task, days.getCurrentDay());
                     adapter.notifyItemRemoved(position);
+
+                    getCurrUserActivity(u.equals("-1") ? "user" : u);
                 }
             }
         };
@@ -193,6 +196,8 @@ public class MainWindowActivity extends AppCompatActivity {
 
                 adapter.notifyItemInserted(taskList.size());
                 taskRecyclerView.scrollToPosition(taskList.size());
+
+                getCurrUserActivity(u.equals("-1") ? "user" : u);
             }
         });
     }
