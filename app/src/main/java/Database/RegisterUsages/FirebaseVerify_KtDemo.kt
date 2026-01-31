@@ -20,15 +20,23 @@ interface IsValidCallback {
 }
 
 fun registerUser(username: String, password: String, callback: IsValidCallback) {
-    mAuth.createUserWithEmailAndPassword(username.trim() + "@dailytodo.com", password)
-        .addOnCompleteListener({ task ->
+    mAuth.createUserWithEmailAndPassword(username.trim() + hashUid(mAuth.currentUser?.uid.toString()) + "@dailytodo.com", password)
+        .addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 val user: FirebaseUser? = mAuth.currentUser
                 if (user != null) {
-                    val uid = user.uid;
-                    val ref: DatabaseReference =
-                        FirebaseDatabase.getInstance().getReference("users")
-                    ref.child(uid).child("name").setValue(username)
+                    val uid = user.uid
+                    val ref = FirebaseDatabase.getInstance().getReference("users")
+
+                    // Store full User object under users/uid
+                    val newUser = User(
+                        name = username,
+                        numberOfActions = 0,
+                        lastTimeJoined = System.currentTimeMillis()
+                    )
+                    Log.d("test+nga", uid)
+
+                    ref.child(uid).setValue(newUser)
 
                     callback.onRes(true, uid)
                 } else callback.onRes(false, null)
@@ -36,10 +44,10 @@ fun registerUser(username: String, password: String, callback: IsValidCallback) 
                 callback.onRes(false, null)
                 Log.w("Register", "User registration failed $username", task.exception)
             }
-        })
+        }
 }
 
-//Should be used only on unit tests
+// Should be used only on unit tests
 fun removeUser() {
     mAuth.currentUser?.delete()
 }
@@ -49,19 +57,20 @@ interface UsernameResCallback {
 }
 
 fun getSignedUsername(callback: UsernameResCallback) {
-    val user: FirebaseUser ?= mAuth.currentUser
+    val user: FirebaseUser? = mAuth.currentUser
     if (user == null) {
         callback.onRes(false, null.toString())
         return
     }
 
     val uid = user.uid
-    val ref: DatabaseReference = FirebaseDatabase.getInstance().getReference("users").child(uid)
+    val ref = FirebaseDatabase.getInstance().getReference("users").child(uid)
+
     ref.addListenerForSingleValueEvent(object : ValueEventListener {
         override fun onDataChange(snapshot: DataSnapshot) {
             if (snapshot.exists() && snapshot.child("name").exists()) {
-                val name = snapshot.child("name").toString()
-                callback.onRes(true, name);
+                val name = snapshot.child("name").getValue<String>() ?: ""
+                callback.onRes(true, name)
             } else callback.onRes(false, null.toString())
         }
 
@@ -73,28 +82,36 @@ fun getSignedUsername(callback: UsernameResCallback) {
 }
 
 fun getCurrUserActivity(username: String) {
-    object : ValueEventListener {
+    val uid = mAuth.currentUser?.uid ?: return
+    val userRef = database.child("users").child(uid)
+
+    userRef.addListenerForSingleValueEvent(object : ValueEventListener {
         override fun onDataChange(snapshot: DataSnapshot) {
             val activity = snapshot.getValue<User>()?.numberOfActions
 
             if (activity != null) {
-                addNewUser(username, activity+1)
+                addNewUser(uid, username, activity + 1)
             } else {
-                addNewUser(username, 1)
+                addNewUser(uid, username, 1)
             }
         }
 
         override fun onCancelled(error: DatabaseError) {
-            addNewUser(username, 1)
+            // do nothing
         }
-    }
+    })
 }
 
-fun addNewUser(userName: String, activity: Int) {
-    val newUser = User(name = userName, numberOfActions = activity)
+fun addNewUser(uid: String, userName: String, activity: Int) {
+    val newUser = User(
+        name = userName,
+        numberOfActions = activity,
+        lastTimeJoined = System.currentTimeMillis()
+    )
+
     val usersRef = database.child("users")
 
-    usersRef.push().child(userName).setValue(newUser)
+    usersRef.child(uid).setValue(newUser)
         .addOnFailureListener {
             Log.d("test+nga", "user firebase FAIL")
         }

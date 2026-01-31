@@ -22,11 +22,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.myapplication.MainLogic.Data.Repository.PanelRepository
+import com.example.myapplication.MainLogic.UI.ViewModels.PanelViewModel
 import com.example.myapplication.R
 import java.util.*
 
 @Composable
 fun TaskSettingsFragment_cmp(
+    viewModel: PanelViewModel,
     modifier: Modifier = Modifier
 ) {
     val purple = Color(0xFF812BE0)
@@ -47,6 +50,12 @@ fun TaskSettingsFragment_cmp(
             )
         )
     }
+
+
+    if (notificationEnabled) {
+        //if (viewModel.check()) viewModel.upsertPanel();
+    }
+
 
     // Show TimePicker
     fun showTimePicker() {
@@ -193,6 +202,7 @@ fun TaskSettingsPanelPreview() {
             .background(Color(0xFFEFEFEF))
     ) {
         TaskSettingsFragment_cmp(
+            PanelViewModel(PanelRepository(LocalContext.current)),
             modifier = Modifier.align(Alignment.BottomCenter)
         )
     }

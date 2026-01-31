@@ -30,21 +30,21 @@ public class NotificationWorker extends Worker {
     public Result doWork() {
         if (databaseManager != null) {
             databaseManager.changeDatabases();
-            Log.d("test+ngaa", "did work");
         }
 
         return Result.success();
     }
 
     public static void runBatchNotif(DatabaseManager dbManager) {
+        Log.d("test+ngaa", calculateInitialDelay()+"");
         databaseManager = dbManager;
 
         PeriodicWorkRequest workRequest =
                 new PeriodicWorkRequest.Builder(
                         NotificationWorker.class,
-                        18,
-                        TimeUnit.MINUTES)
-                        .setInitialDelay(0, TimeUnit.MINUTES)
+                        24,
+                        TimeUnit.HOURS)
+                        .setInitialDelay(calculateInitialDelay(), TimeUnit.MINUTES)
                         .build();
 
         WorkManager.getInstance()
@@ -53,7 +53,6 @@ public class NotificationWorker extends Worker {
                         ExistingPeriodicWorkPolicy.REPLACE,
                         workRequest
                 );
-        Log.d("test+ngaa", "eh");
     }
 
     private static long calculateInitialDelay() {

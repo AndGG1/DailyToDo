@@ -11,5 +11,5 @@ interface HuggingFaceApi {
         "Content-Type: application/json"
     )
     @POST("models/openai-community/gpt2")
-    fun queryModel(@Body inputs: Map<String, String>): Call<Map<String, Any>>
+    fun queryModel(@Body inputs: Map<String, String>): Call<Map<String, String>>
 }

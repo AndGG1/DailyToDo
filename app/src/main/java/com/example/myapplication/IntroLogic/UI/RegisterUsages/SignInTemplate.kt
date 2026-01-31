@@ -1,9 +1,3 @@
-import Database.RegisterUsages.IsValidCallback
-import Database.RegisterUsages.encrypt
-import Database.RegisterUsages.registerUser
-import android.content.Context.MODE_PRIVATE
-import android.content.Intent
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -43,15 +37,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.content.edit
-import com.example.myapplication.IntroLogic.UI.RegisterUsages.ComposeTestActivity
 import com.example.myapplication.IntroLogic.UI.RegisterUsages.registerUserComp
-import com.example.myapplication.MainLogic.UI.MainWindowActivity
 import com.example.myapplication.R
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 
 @Composable
 fun SignInTemplate(
@@ -209,7 +196,6 @@ fun SignInTemplate(
                 Button(
                     onClick = {
                         if (username.length in 2..20 && password.length in 6..10) {
-
                             registerUserComp(username, password, sm)
                         }
                     },

@@ -25,8 +25,8 @@ class TaskViewModel(private val repository: TaskRepository) : ViewModel() {
         _state.value = UIState2.LOADING
         viewModelScope.launch(Dispatchers.IO) {
             _tasks.postValue(repository.loadTasksForDay(dayValue))
+            _state.value = UIState2.STANDING
         }
-        _state.value = UIState2.STANDING
     }
 
     fun insertTask(task: TaskItemBean, dayValue: Int) {
@@ -34,8 +34,8 @@ class TaskViewModel(private val repository: TaskRepository) : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             repository.insertTask(task, dayValue)
             _tasks.postValue(repository.loadTasksForDay(dayValue))
+            _state.value = UIState2.STANDING
         }
-        _state.value = UIState2.STANDING
     }
 
     fun deleteTask(task: TaskItemBean, dayValue: Int) {
@@ -43,8 +43,8 @@ class TaskViewModel(private val repository: TaskRepository) : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             repository.deleteTask(task, dayValue)
             _tasks.postValue(repository.loadTasksForDay(dayValue))
+            _state.value = UIState2.STANDING
         }
-        _state.value = UIState2.STANDING
     }
 
     fun updateTask(task: TaskItemBean, dayValue: Int) {
@@ -52,8 +52,8 @@ class TaskViewModel(private val repository: TaskRepository) : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             repository.updateTask(task, dayValue)
             _tasks.postValue(repository.loadTasksForDay(dayValue))
+            _state.value = UIState2.STANDING
         }
-        _state.value = UIState2.STANDING
     }
 
     fun closeDBManager() {

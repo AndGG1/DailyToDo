@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     id("com.google.gms.google-services") // ✅ Firebase plugin
+    kotlin("kapt")
 }
 
 android {
@@ -44,8 +45,16 @@ android {
 }
 
 dependencies {
+    //Additional lifecycle coroutine copes needs
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.0")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.8.0")
+
     //ViewModel life-cycle scope
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.9.4")
+
+    //Basic life-cycle scope
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.4")
 
     // ✅ Firebase BOM and Authentication
     implementation(platform("com.google.firebase:firebase-bom:34.0.0"))
@@ -110,7 +119,9 @@ dependencies {
     implementation ("androidx.room:room-runtime:2.6.1")
 
     // Room compiler (annotation processor)
-//    kapt ("androidx.room:room-compiler:2.6.1")
+    kapt ("androidx.room:room-compiler:2.6.1")
+    implementation("androidx.room:room-runtime:2.6.0")
+    implementation("androidx.room:room-ktx:2.6.0")
 
     // Optional - Kotlin Extensions and Coroutines support
     implementation ("androidx.room:room-ktx:2.6.1")

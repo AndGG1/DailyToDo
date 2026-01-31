@@ -84,7 +84,6 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
                 Consumer<Object> func = (a) -> listener.updateT(item, days.getCurrentDay());
 
                 listener.requestEmoji(newText, holder.taskInput, func);
-                Log.d("test+nga", "ratatat");
             }
         });
 
@@ -121,7 +120,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
                 FragmentManager fragmentManager = activity.getSupportFragmentManager();
                 FragmentTransaction transaction = fragmentManager.beginTransaction();
 
-                Fragment fragment = new TaskSettingsFragment(); // Use your Compose-based fragment
+                Fragment fragment = new TaskSettingsFragment(listener.getContext()); // Use your Compose-based fragment
 
                 if (!"down_arrow".equals(holder.arrowButton.getContentDescription().toString())) {
                     holder.arrowButton.setContentDescription("down_arrow");

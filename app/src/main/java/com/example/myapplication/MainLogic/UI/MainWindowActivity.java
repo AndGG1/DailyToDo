@@ -5,6 +5,7 @@ import static Database.RegisterUsages.CyptoUtils_KtDemoKt.decrypt;
 import static Database.RegisterUsages.FirebaseVerify_KtDemoKt.getCurrUserActivity;
 import static Database.RegisterUsages.FirebaseVerify_KtDemoKt.getSignedUsername;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -53,6 +54,8 @@ public class MainWindowActivity extends AppCompatActivity {
     private boolean isLoading = false;
     private ActivityThirdMainBinding binding;
     private final Days days = new Days();
+
+    private Context contextOfActivity = this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -229,6 +232,8 @@ public class MainWindowActivity extends AppCompatActivity {
     }
 
     class AdapterListener {
+        Context context = contextOfActivity;
+
         void updateT(TaskItemBean task, int day) {
             viewModel.updateTask(task, day);
         }
@@ -239,6 +244,10 @@ public class MainWindowActivity extends AppCompatActivity {
 
         List<TaskItemBean> getTaskList() {
             return taskList;
+        }
+
+        public Context getContext() {
+            return context;
         }
     }
 }

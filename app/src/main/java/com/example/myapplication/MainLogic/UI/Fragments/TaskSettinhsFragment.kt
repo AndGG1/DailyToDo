@@ -1,14 +1,18 @@
 package com.example.myapplication.MainLogic.UI.Fragments
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
+import com.example.myapplication.MainLogic.Data.Repository.PanelRepository
+import com.example.myapplication.MainLogic.UI.ViewModels.PanelViewModel
 import com.example.myapplication.R
 
-class TaskSettingsFragment : Fragment() {
+class TaskSettingsFragment(contextOfApp: Context) : Fragment() {
+    val copyOfContext = contextOfApp
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -20,8 +24,9 @@ class TaskSettingsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val composeView = view.findViewById<ComposeView>(R.id.taskSettingsCompose)
+        val panelViewModel = PanelViewModel(PanelRepository(copyOfContext))
         composeView.setContent {
-            TaskSettingsFragment_cmp()
+            TaskSettingsFragment_cmp(panelViewModel)
         }
     }
 }

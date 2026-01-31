@@ -61,7 +61,8 @@ public class WelcomeActivity extends AppCompatActivity {
                 hasSignedInBefore.set(exists);
             });
         }
-            if (!hasSignedInBefore.get()) {
+
+        if (!hasSignedInBefore.get()) {
                 AnimatorHelper.animateWelcomeSequence(welcomeText, welcomeText2, () -> {
                     Intent switchActivityIntent = new Intent(this, ComposeTestActivity.class);
                     switchActivityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK

@@ -8,7 +8,7 @@ val KEY_VALUE = "1234567890123456"
 val cipher = Cipher.getInstance("AES/ECB/PKCS5Padding")
 val secretKey = SecretKeySpec(KEY_VALUE.toByteArray(), "AES")
 
-suspend fun encrypt(input: String) : String {
+fun encrypt(input: String) : String {
     cipher.init(Cipher.ENCRYPT_MODE, secretKey)
 
     val encrypted = cipher.doFinal(input.toByteArray(Charsets.UTF_8))
