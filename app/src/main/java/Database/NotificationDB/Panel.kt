@@ -9,6 +9,5 @@ data class Panel(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
     @ColumnInfo(name = "repeat") val repeat: Boolean?,
-    @ColumnInfo(name = "notify") val notify: Boolean?,
     @ColumnInfo(name = "time") val time: String?
 )

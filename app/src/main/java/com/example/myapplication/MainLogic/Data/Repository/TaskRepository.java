@@ -50,6 +50,7 @@ public class TaskRepository {
         long id = dbManager.insert(task.getText(), desc, checked, dayValue, task.getPos());
         task.setDbId(id);
 
+        Log.d("test+ngaa", id+"");
         return id;
     }
 
@@ -60,7 +61,7 @@ public class TaskRepository {
     public void updateTask(TaskItemBean task, int dayValue) {
         String desc = task.isImportant() ? "important" : "regular";
         String checked = task.isCompleted() ? "1" : "0";
-        dbManager.update(task.getDbId(), task.getText(), desc, checked, dayValue, task.getPos());
+        dbManager.update(task.getDbId(), task.getText(), desc, checked, dayValue, task.getPos(), task.getRepeat());
     }
 
     public void closeDbManager() {

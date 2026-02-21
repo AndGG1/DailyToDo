@@ -120,7 +120,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
                 FragmentManager fragmentManager = activity.getSupportFragmentManager();
                 FragmentTransaction transaction = fragmentManager.beginTransaction();
 
-                Fragment fragment = new TaskSettingsFragment(listener.getContext()); // Use your Compose-based fragment
+                Fragment fragment = new TaskSettingsFragment(listener.getContext(), holder._id, listener, item, days);
 
                 if (!"down_arrow".equals(holder.arrowButton.getContentDescription().toString())) {
                     holder.arrowButton.setContentDescription("down_arrow");

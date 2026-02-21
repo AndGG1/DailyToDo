@@ -5,7 +5,7 @@ import androidx.room.RoomDatabase
 
 @Database(
     entities = [Panel::class],
-    version = 1
+    version = 2
 )
 abstract class PanelDatabase: RoomDatabase() {
     abstract fun panelDao() : PanelDao

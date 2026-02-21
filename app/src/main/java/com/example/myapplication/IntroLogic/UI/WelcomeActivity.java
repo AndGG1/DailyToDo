@@ -1,19 +1,23 @@
 package com.example.myapplication.IntroLogic.UI;
 
+import static androidx.core.content.ContextCompat.getSystemService;
 import static Database.RegisterUsages.CyptoUtils_KtDemoKt.decrypt;
 import static Database.RegisterUsages.FirebaseVerify_KtDemoKt.getCurrUserActivity;
 import static Database.RegisterUsages.FirebaseVerify_KtDemoKt.getSignedUsername;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
 import android.view.animation.AnticipateInterpolator;
-import android.view.animation.OvershootInterpolator;
 import android.widget.TextView;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.myapplication.IntroLogic.UI.RegisterUsages.ComposeTestActivity;

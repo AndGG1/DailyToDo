@@ -5,7 +5,12 @@ import static Database.RegisterUsages.CyptoUtils_KtDemoKt.decrypt;
 import static Database.RegisterUsages.FirebaseVerify_KtDemoKt.getCurrUserActivity;
 import static Database.RegisterUsages.FirebaseVerify_KtDemoKt.getSignedUsername;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -14,6 +19,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.activity.OnBackPressedCallback;
@@ -39,6 +45,7 @@ import Database.BatchWorker.NotificationWorker;
 
 public class MainWindowActivity extends AppCompatActivity {
 
+    private RelativeLayout background;
     private View activeIndicator;
     private TextView titleText;
     private Button yesterdayButton, todayButton, tomorrowButton;
@@ -62,7 +69,9 @@ public class MainWindowActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityThirdMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        createNotificationChannel();
 
+        background = binding.daySelectorLayout;
         activeIndicator = binding.activeIndicator;
         titleText = binding.titleText;
         yesterdayButton = binding.yesterdayButton;
@@ -153,6 +162,11 @@ public class MainWindowActivity extends AppCompatActivity {
 
         settingsButton.setOnClickListener(v -> {
             v.animate().rotationBy(360f).setDuration(400).withEndAction(() -> v.setRotation(0f)).start();
+            if (((ColorDrawable) background.getBackground()).getColor() == Color.WHITE) {
+                background.setBackgroundColor(Color.GRAY);
+            } else {
+                background.setBackgroundColor(Color.WHITE);
+            }
         });
 
         ItemTouchHelper.SimpleCallback touchHelperCallback = new ItemTouchHelper.SimpleCallback(
@@ -231,10 +245,10 @@ public class MainWindowActivity extends AppCompatActivity {
         adapter.notifyDataSetChanged();
     }
 
-    class AdapterListener {
+    public class AdapterListener {
         Context context = contextOfActivity;
 
-        void updateT(TaskItemBean task, int day) {
+        public void updateT(TaskItemBean task, int day) {
             viewModel.updateTask(task, day);
         }
 
@@ -248,6 +262,20 @@ public class MainWindowActivity extends AppCompatActivity {
 
         public Context getContext() {
             return context;
+        }
+    }
+
+    public void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            String channelName = "channel_1";
+            String channelDesc = "Default main channel(channel_1)";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+
+            NotificationChannel notificationChannel = new NotificationChannel("ch_1", channelName, importance);
+            notificationChannel.setDescription(channelDesc);
+
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(notificationChannel);
         }
     }
 }

@@ -8,6 +8,8 @@ public class TaskItemBean {
     private String task_id = "NOT_INIT";
     private long dbId = -1;
 
+    private int repeat;
+
     public TaskItemBean(String text) {
         this.text = text;
         this.isCompleted = false;
@@ -32,6 +34,14 @@ public class TaskItemBean {
 
     public void setTask_id(String task_id) {
         this.task_id = task_id;
+    }
+
+    public int getRepeat() {
+        return repeat;
+    }
+
+    public void setRepeat(int repeat) {
+        this.repeat = repeat;
     }
 
     @Override

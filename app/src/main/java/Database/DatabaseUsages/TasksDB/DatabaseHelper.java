@@ -12,9 +12,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String DESC = "description";
     public static final String CHECKED = "checked";
     public static final String POSITION = "position";
+    public static final String REPEAT = "repeat";
 
     static final String DB_NAME = "DailyToDo_App.DB";
-    static final int DB_VERSION = 4;
+    static final int DB_VERSION = 6;
 
     private static final String CREATE_TABLE =
             "CREATE TABLE " + TABLE_NAME + "("
@@ -22,7 +23,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     + SUBJECT + " TEXT NOT NULL, "
                     + DESC + " TEXT NOT NULL, "
                     + CHECKED + " TEXT NOT NULL,"
-                    + POSITION + " INTEGER NOT NULL)";
+                    + POSITION + " INTEGER NOT NULL,"
+                    + REPEAT + " INTEGER NOT NULL)";
 
     public DatabaseHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -47,6 +49,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void switchDatabases(SQLiteDatabase db) {
         db.beginTransaction();
         try {
+            db.execSQL("INSERT INTO " + (TABLE_NAME + "3") +
+                    " SELECT * FROM " + (TABLE_NAME + "1") +
+                    " WHERE repeat = 1");
+
+            db.execSQL("INSERT INTO " + (TABLE_NAME + "3") +
+                    " SELECT * FROM " + (TABLE_NAME + "2") +
+                    " WHERE repeat = 1");
+
             // 1. Clear TASKS_1
             db.execSQL("DELETE FROM " + (TABLE_NAME + "1"));
 
@@ -62,7 +72,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         " SELECT * FROM " + (TABLE_NAME + "3"));
 
             // 5. Clear TASKS_3 (optional: keep empty for reuse)
-            db.execSQL("DELETE FROM " + (TABLE_NAME + "3"));
+            db.execSQL("DELETE FROM " + (TABLE_NAME + "3")
+                    + " WHERE repeat = 0");
 
             db.setTransactionSuccessful();
         } finally {

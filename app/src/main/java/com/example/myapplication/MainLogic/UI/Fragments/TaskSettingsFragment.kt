@@ -1,6 +1,13 @@
 package com.example.myapplication.MainLogic.UI.Fragments
 
+import android.app.AlarmManager
+import android.app.PendingIntent
 import android.app.TimePickerDialog
+import android.content.Context
+import android.content.Context.ALARM_SERVICE
+import android.content.Intent
+import android.os.Build
+import android.provider.Settings
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -19,23 +26,37 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.myapplication.MainLogic.Data.Repository.PanelRepository
+import com.example.myapplication.MainLogic.Data.Model.Days
+import com.example.myapplication.MainLogic.Data.Model.TaskItemBean
+import com.example.myapplication.MainLogic.UI.MainWindowActivity
 import com.example.myapplication.MainLogic.UI.ViewModels.PanelViewModel
+import com.example.myapplication.NotificationSystem.Notification
 import com.example.myapplication.R
 import java.util.*
+
+var contextUse: Context? = null
+var timeVal: Long = 100
+var pId = "id_1"
+var alarmManager: AlarmManager? = null
 
 @Composable
 fun TaskSettingsFragment_cmp(
     viewModel: PanelViewModel,
+    panelId: String,
+    listener: MainWindowActivity.AdapterListener,
+    task: TaskItemBean,
+    days: Days,
     modifier: Modifier = Modifier
 ) {
     val purple = Color(0xFF812BE0)
-    val trackColor = Color(0xFFD2BAF7)
     val fragmentBackground = Color(0xFFF8F3FF)
     val context = LocalContext.current
+    contextUse = context
+    pId = panelId
+    alarmManager = contextUse!!.getSystemService(ALARM_SERVICE) as AlarmManager
+
 
     // State for switches and time
     var notificationEnabled by remember { mutableStateOf(false) }
@@ -52,9 +73,18 @@ fun TaskSettingsFragment_cmp(
     }
 
 
-    if (notificationEnabled) {
-        //if (viewModel.check()) viewModel.upsertPanel();
+    if (repeatEnabled == true) {
+        task.repeat = 1
+        listener.updateT(task, days.currentDay)
+    } else {
+        task.repeat = 0
+        listener.updateT(task, days.currentDay)
     }
+
+    if (notificationEnabled) {
+        scheduleNotification()
+
+    } else cancelNotification()
 
 
     // Show TimePicker
@@ -67,6 +97,8 @@ fun TaskSettingsFragment_cmp(
                 selectedTime.set(Calendar.HOUR_OF_DAY, selectedHour)
                 selectedTime.set(Calendar.MINUTE, selectedMinute)
                 timeLabel = String.format("%02d:%02d", selectedHour, selectedMinute)
+
+                timeVal = selectedTime.timeInMillis
             },
             hour,
             minute,
@@ -147,8 +179,8 @@ fun TaskSettingsFragment_cmp(
                     },
                     modifier = Modifier.scale(0.7f),
                     colors = SwitchDefaults.colors(
-                        checkedThumbColor = trackColor,
-                        checkedTrackColor = trackColor,
+                        checkedThumbColor = purple,
+                        checkedTrackColor = fragmentBackground,
                         uncheckedThumbColor = purple,
                         uncheckedTrackColor = fragmentBackground
                     )
@@ -182,8 +214,8 @@ fun TaskSettingsFragment_cmp(
                     },
                     modifier = Modifier.scale(0.7f),
                     colors = SwitchDefaults.colors(
-                        checkedThumbColor = trackColor,
-                        checkedTrackColor = trackColor,
+                        checkedThumbColor = purple,
+                        checkedTrackColor = fragmentBackground,
                         uncheckedThumbColor = purple,
                         uncheckedTrackColor = fragmentBackground
                     )
@@ -193,17 +225,50 @@ fun TaskSettingsFragment_cmp(
     }
 }
 
-@Preview(showBackground = true, widthDp = 411, heightDp = 640)
-@Composable
-fun TaskSettingsPanelPreview() {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFFEFEFEF))
-    ) {
-        TaskSettingsFragment_cmp(
-            PanelViewModel(PanelRepository(LocalContext.current)),
-            modifier = Modifier.align(Alignment.BottomCenter)
+fun scheduleNotification() {
+    val intent = Intent(contextUse!!.applicationContext, Notification::class.java).apply {
+        putExtra("titleExtra", "Task")
+        putExtra("textExtra", "Time to do your task!")
+        putExtra("notificationIdExtra", pId.hashCode().toString())
+    }
+
+    val pendingIntent = PendingIntent.getBroadcast(
+        contextUse!!.applicationContext,
+        pId.hashCode(),
+        intent,
+        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+    )
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        if (alarmManager!!.canScheduleExactAlarms()) {
+            alarmManager!!.setExactAndAllowWhileIdle(
+                AlarmManager.RTC_WAKEUP,
+                timeVal,
+                pendingIntent
+            )
+        } else {
+            val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM)
+            contextUse?.startActivity(intent)
+        }
+    } else {
+        alarmManager!!.setExactAndAllowWhileIdle(
+            AlarmManager.RTC_WAKEUP,
+            timeVal,
+            pendingIntent
         )
     }
+
+    Toast.makeText(contextUse!!.applicationContext, "Scheduled", Toast.LENGTH_LONG).show()
+}
+
+fun cancelNotification() {
+    val intent = Intent(contextUse!!.applicationContext, Notification::class.java).apply {
+        putExtra("titleExtra", "Task")
+        putExtra("textExtra", "Time to do your task!")
+        putExtra("notificationIdExtra", pId.hashCode().toString())
+    }
+
+    val pendingIntent = PendingIntent.getBroadcast(contextUse!!.applicationContext, pId.hashCode(), intent,
+        PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE);
+    alarmManager!!.cancel(pendingIntent);
 }

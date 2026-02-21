@@ -36,7 +36,6 @@ public class NotificationWorker extends Worker {
     }
 
     public static void runBatchNotif(DatabaseManager dbManager) {
-        Log.d("test+ngaa", calculateInitialDelay()+"");
         databaseManager = dbManager;
 
         PeriodicWorkRequest workRequest =

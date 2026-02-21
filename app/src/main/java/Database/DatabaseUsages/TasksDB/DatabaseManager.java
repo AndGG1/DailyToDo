@@ -33,6 +33,7 @@ public class DatabaseManager {
         contentValues.put(DatabaseHelper.DESC, desc);
         contentValues.put(DatabaseHelper.CHECKED, checked);
         contentValues.put(DatabaseHelper.POSITION, pos);
+        contentValues.put(DatabaseHelper.REPEAT, 0);
 
         return database.insert(DatabaseHelper.TABLE_NAME + val, null, contentValues);
     }
@@ -40,7 +41,7 @@ public class DatabaseManager {
     public Cursor fetch(int val) {
         String[] columns = new String[] {DatabaseHelper._ID,
         DatabaseHelper.SUBJECT, DatabaseHelper.DESC, DatabaseHelper.CHECKED,
-                DatabaseHelper.POSITION};
+                DatabaseHelper.POSITION, DatabaseHelper.REPEAT};
 
         Cursor cursor = database.query(DatabaseHelper.TABLE_NAME + val,
                 columns,
@@ -56,12 +57,13 @@ public class DatabaseManager {
         return cursor;
     }
 
-    public int update(long _id, String name, String desc, String checked, int val, int pos) {
+    public int update(long _id, String name, String desc, String checked, int val, int pos, int repeat) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(DatabaseHelper.SUBJECT, name);
         contentValues.put(DatabaseHelper.DESC, desc);
         contentValues.put(DatabaseHelper.CHECKED, checked);
         contentValues.put(DatabaseHelper.POSITION, pos);
+        contentValues.put(DatabaseHelper.REPEAT, repeat);
 
         return database.update(
                 DatabaseHelper.TABLE_NAME + val,
